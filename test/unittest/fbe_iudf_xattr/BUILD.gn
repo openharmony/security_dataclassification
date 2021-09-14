@@ -1,0 +1,33 @@
+import("//build/test.gni")
+module_output_path = "dataclassification/fbe_iudf_xattr"
+
+config("fbe_iudf_xattr_test_config") {
+    visibility = [ ":*" ]
+    include_dirs = [
+        "//base/security/dataclassification/test/unittest/fbe_iudf_xattr",
+        "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr/include",
+        "//third_party/googletest/googletest/include",
+    ]
+    cflags = [ "-DHILOG_ENABLE" ]
+}
+
+ohos_unittest("IudfXattrTest") {
+    part_name = "dataclassification"
+    subsystem_name = "security"
+    module_out_path = module_output_path
+
+    sources = [ "fbe_iudf_xattr_test.cpp" ]
+
+    configs = [ ":fbe_iudf_xattr_test_config"]
+
+    deps = [
+        "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr"
+    ]
+
+    external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+}
+
+group("fbe_iudf_xattr_test") {
+    testonly = true
+    deps = [ ":IudfXattrTest" ]
+}

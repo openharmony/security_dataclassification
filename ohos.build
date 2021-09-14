@@ -32,6 +32,8 @@
         }
       ],
       "test_list": [
+        "//base/security/dataclassification/test/unittest/fbe_iudf_xattr:fbe_iudf_xattr_test",
+        "//base/security/dataclassification/test/unittest/hwdevsl:hwdevsl_test"
       ]
     }
   }
