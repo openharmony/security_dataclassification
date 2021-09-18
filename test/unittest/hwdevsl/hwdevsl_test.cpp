@@ -45,7 +45,7 @@ void DeviceSecurityLevelTest::TearDown() {}
  * @tc.desc: Verify DEVSL_OnStart function
  * @tc.type: FUN
  */
-HWTEST_F(DeviceSecurityLevelTest, TestOnStart, TestSize.Level1)
+HWTEST_F(DeviceSecurityLevelTest, TestOnStart, TestSize.Level0)
 {
     int32_t ret;
 

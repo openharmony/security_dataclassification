@@ -45,7 +45,7 @@ void IudfXattrTest::TearDown() {}
  * @tc.desc: Verify IsSupportIudf function
  * @tc.type: FUN
  */
-HWTEST_F(IudfXattrTest, TestIsSupportIudf, TestSize.Level1)
+HWTEST_F(IudfXattrTest, TestIsSupportIudf, TestSize.Level0)
 {
     bool ret;
 
