@@ -31,7 +31,6 @@ typedef struct {
 #define DEV_TYPE_PHONE 1 /* device type - PHONE */
 #define DEV_TYPE_PAD 2 /* device type - PAD */
 #define DEV_TYPE_TV 3 /* device type - TV */
-#define DEV_TYPE_PC 4 /* device type - PC */
 #define DEV_TYPE_WATCH 5 /* device type - WATCH */
 
 /* caller queries data security level :
@@ -43,7 +42,7 @@ typedef struct {
     const uint8_t *sensitiveData; /* optional */
     uint32_t idLen; /* if udid is a string, the length should not with end tag 0 */
     uint32_t sensitiveDataLen; /* length of sensitiveData */
-    uint32_t devType; /* only support PHONE, PAD, TV, PC, WATCH */
+    uint32_t devType; /* only support PHONE, PAD,  TV, WATCH */
 } DEVSLQueryParams;
 
 /* tmpParams is pointer */
