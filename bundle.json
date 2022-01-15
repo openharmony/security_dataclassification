@@ -1,0 +1,68 @@
+{
+    "name": "@openharmony/dataclassification",
+    "version": "3.1.0",
+    "description": "dataclassification",
+    "publishAs": "code-segment",
+    "scripts": {
+      "install": "DEST_PATH=${DEP_BUNDLE_BASE}/base/security/dataclassification && mkdir -p $DEST_PATH && cp -r ./* $DEST_PATH"
+     },
+     "author": {},
+     "repository": "",
+     "license": "Apache License 2.0",
+     "component": {
+      "name": "dataclassification",
+      "subsystem": "security",
+      "adapted_system_type": [ "standard" ],
+      "deps": {
+        "components": [
+           "dslm_sdk",
+           "utils_base",
+           "libhilog"
+      ]
+      },
+      "build": {
+        "sub_component": [
+          "//base/security/dataclassification/interfaces/innerkits/hwdevsl:hwdsl",
+          "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr",
+          "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel:datasecuritylevel"
+      ],
+       "inner_kits": [
+      {
+        "name": "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr",
+        "header": {
+         "header_files": [
+          "fbe_sdp_code_num.h",
+          "fbe_sdp_policy.h"
+         ],
+        "header_base": "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr/include"
+        }
+      },
+      {
+        "name": "//base/security/dataclassification/interfaces/innerkits/hwdevsl:hwdsl",
+        "header": {
+         "header_files": [
+          "1.0/dev_slinfo_mgr.h"
+         ],
+         "header_base": "//base/security/dataclassification/interfaces/innerkits/hwdevsl/include"
+        }
+      },
+      {
+        "name": "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel:datasecuritylevel",
+        "header": {
+         "header_files": [
+          "dev_slinfo_adpt.h",
+          "dev_slinfo_log.h",
+          "dev_slinfo_list.h",
+          "dev_slinfo_mgr.h"
+         ],
+        "header_base": "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel/include"
+       }
+      }
+    ],
+    "test": [
+       "//base/security/dataclassification/test/unittest/fbe_iudf_xattr:fbe_iudf_xattr_test",
+       "//base/security/dataclassification/test/unittest/hwdevsl:hwdevsl_test"
+    ]
+  }
+}
+}
