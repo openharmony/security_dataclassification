@@ -1,18 +1,14 @@
 {
-    "name": "@openharmony/dataclassification",
-    "description": "openharmony's data transmission control",
-    "version": "3.1.0",
+    "name": "@ohos/dataclassification",
+    "description": "data transmission control",
+    "version": "3.1",
     "license": "Apache License 2.0",
     "publishAs": "code-segment",
     "segment": {
-        "destPath": "//base/security/dataclassification"
+        "destPath": "base/security/dataclassification"
     },
     "dirs": {},
-    "scripts": {
-        "install": "DEST_PATH=${DEP_BUNDLE_BASE}/base/security/dataclassification && mkdir -p $DEST_PATH && cp -r ./* $DEST_PATH"
-     },
-    "author": {},
-    "repository": "",
+    "scripts": {},
     "component": {
         "name": "dataclassification",
         "subsystem": "security",
@@ -20,13 +16,13 @@
             ""
         ],
         "features": [
-            "datasecuritylevel_dtc"
+            ""
         ],
         "adapted_system_type": [
             "standard"
         ],
-        "rom": "",
-        "ram": "",
+        "rom": "30KB",
+        "ram": "20KB",
         "deps": {
             "components": [
                 "dslm_sdk",
@@ -40,8 +36,7 @@
         "build": {
             "sub_components": [
                 "//base/security/dataclassification/interfaces/innerkits/hwdevsl:hwdsl",
-                "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr",
-                "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel:datasecuritylevel"
+                "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr"
             ],
             "inner_kits": [
                 {
@@ -62,20 +57,8 @@
                         ],
                         "header_base": "//base/security/dataclassification/interfaces/innerkits/hwdevsl/include"
                     }
-                },
-                {
-                    "name": "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel:datasecuritylevel",
-                    "header": {
-                        "header_files": [
-                            "dev_slinfo_adpt.h",
-                            "dev_slinfo_log.h",
-                            "dev_slinfo_list.h",
-                            "dev_slinfo_mgr.h"
-                        ],
-                        "header_base": "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel/include"
-                    }
                 }
-            ] ,
+            ],
             "test": [
                 "//base/security/dataclassification/test/unittest/fbe_iudf_xattr:fbe_iudf_xattr_test",
                 "//base/security/dataclassification/test/unittest/hwdevsl:hwdevsl_test"
