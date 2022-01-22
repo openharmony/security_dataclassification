@@ -12,12 +12,8 @@
     "component": {
         "name": "dataclassification",
         "subsystem": "security",
-        "syscap": [
-            ""
-        ],
-        "features": [
-            ""
-        ],
+        "syscap": [],
+        "features": [],
         "adapted_system_type": [
             "standard"
         ],
@@ -25,18 +21,14 @@
         "ram": "20KB",
         "deps": {
             "components": [
-                "dslm_sdk",
                 "utils_base",
                 "libhilog"
             ],
-            "third_party": [
-                ""
-            ]
+            "third_party": []
         },
         "build": {
-            "sub_components": [
-                "//base/security/dataclassification/interfaces/innerkits/hwdevsl:hwdsl",
-                "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr"
+            "sub_component": [
+                "//base/security/dataclassification:dataclassification_build_module"
             ],
             "inner_kits": [
                 {
