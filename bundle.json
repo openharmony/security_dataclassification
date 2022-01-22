@@ -1,0 +1,60 @@
+{
+    "name": "@ohos/dataclassification",
+    "description": "data transmission control",
+    "version": "3.1",
+    "license": "Apache License 2.0",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "base/security/dataclassification"
+    },
+    "dirs": {},
+    "scripts": {},
+    "component": {
+        "name": "dataclassification",
+        "subsystem": "security",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "30KB",
+        "ram": "20KB",
+        "deps": {
+            "components": [
+                "utils_base",
+                "libhilog"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [
+                "//base/security/dataclassification:dataclassification_build_module"
+            ],
+            "inner_kits": [
+                {
+                    "name": "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr",
+                    "header": {
+                        "header_files": [
+                            "fbe_sdp_code_num.h",
+                            "fbe_sdp_policy.h"
+                        ],
+                        "header_base": "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr/include"
+                    }
+                },
+                {
+                    "name": "//base/security/dataclassification/interfaces/innerkits/hwdevsl:hwdsl",
+                    "header": {
+                        "header_files": [
+                            "1.0/dev_slinfo_mgr.h"
+                        ],
+                        "header_base": "//base/security/dataclassification/interfaces/innerkits/hwdevsl/include"
+                    }
+                }
+            ],
+            "test": [
+                "//base/security/dataclassification/test/unittest/fbe_iudf_xattr:fbe_iudf_xattr_test",
+                "//base/security/dataclassification/test/unittest/hwdevsl:hwdevsl_test"
+            ]
+        }
+    }
+}
