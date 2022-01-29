@@ -31,12 +31,12 @@ extern "C" {
 #define DEV_SEC_LEVEL5 5 /* sl5 */
 
 typedef int32_t (*RequestDeviceSecurityInfoFunction)(const DeviceIdentify *identify,
-                                        const RequestOption *option,
-                                        DeviceSecurityInfo **info);
+                                                     const RequestOption *option,
+                                                     DeviceSecurityInfo **info);
 
 typedef int32_t (*RequestDeviceSecurityInfoAsyncFunction)(const DeviceIdentify *identify,
-                                        const RequestOption *option,
-                                        DeviceSecurityInfoCallback callback);
+                                                          const RequestOption *option,
+                                                          DeviceSecurityInfoCallback callback);
 
 typedef void (*FreeDeviceSecurityInfoFunction)(DeviceSecurityInfo *info);
 

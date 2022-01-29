@@ -17,12 +17,13 @@
         "adapted_system_type": [
             "standard"
         ],
-        "rom": "30KB",
-        "ram": "20KB",
+        "rom": "50KB",
+        "ram": "50KB",
         "deps": {
             "components": [
                 "utils_base",
-                "libhilog"
+                "libhilog",
+                "dslm_sdk"
             ],
             "third_party": []
         },
@@ -32,28 +33,17 @@
             ],
             "inner_kits": [
                 {
-                    "name": "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr",
+                    "name": "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel:datasecuritylevel",
                     "header": {
                         "header_files": [
-                            "fbe_sdp_code_num.h",
-                            "fbe_sdp_policy.h"
+                            "dev_slinfo_mgr.h"
                         ],
-                        "header_base": "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr/include"
-                    }
-                },
-                {
-                    "name": "//base/security/dataclassification/interfaces/innerkits/hwdevsl:hwdsl",
-                    "header": {
-                        "header_files": [
-                            "1.0/dev_slinfo_mgr.h"
-                        ],
-                        "header_base": "//base/security/dataclassification/interfaces/innerkits/hwdevsl/include"
+                        "header_base": "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel/include"
                     }
                 }
             ],
             "test": [
-                "//base/security/dataclassification/test/unittest/fbe_iudf_xattr:fbe_iudf_xattr_test",
-                "//base/security/dataclassification/test/unittest/hwdevsl:hwdevsl_test"
+                "//base/security/dataclassification/test/unittest/datasecuritylevel:DevSLMgrTest"
             ]
         }
     }

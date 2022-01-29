@@ -16,10 +16,6 @@
 #ifndef DATASECURITYLEVEL_TEST_H
 #define DATASECURITYLEVEL_TEST_H
 
-#include <cstdint>
-
-const static uint32_t UDID_LENGTH = 128;
-
 int TestOnstart(void);
 int TestGetHighestSecLevel001(void);
 int TestGetHighestSecLevel002(void);

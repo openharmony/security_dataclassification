@@ -12,15 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include "dev_slinfo_list.h"
+#include "dev_slinfo_adpt.h"
+#include "dev_slinfo_log.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "dev_slinfo_list.h"
-#include "dev_slinfo_adpt.h"
-#include "dev_slinfo_log.h"
 
 #define DEVSL_API __attribute__ ((visibility ("default")))
 
@@ -71,7 +69,6 @@ DEVSL_API void DATASL_OnStop(void)
 DEVSL_API int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo)
 {
     int32_t ret = 0;
-
     DATA_SEC_LOG_INFO("Enter DATASL_GetHighestSecLevel!");
     if ((queryParams == NULL) || (levelInfo == NULL)) {
         return ERR_INVALID_PARA;
@@ -83,7 +80,7 @@ DEVSL_API int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint3
     return ret;
 }
 
-//Async
+// Async
 static int32_t GetHighestSecLevelByUdidAsync(DEVSLQueryParams *queryParams)
 {
     DATA_SEC_LOG_INFO("Enter GetHighestSecLevelByUdidAsync!");
@@ -105,18 +102,15 @@ static int32_t GetHighestSecLevelByUdidAsync(DEVSLQueryParams *queryParams)
 
 DEVSL_API int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback)
 {
-
     DATA_SEC_LOG_INFO("Enter DATASL_GetHighestSecLevelAsync!");
     int32_t ret;
 
     if ((queryParams == NULL) || (callback == NULL)) {
         return ERR_INVALID_PARA;
     }
-    
-    ret = UpdateCallback(queryParams, callback);
-    
-    ret = GetHighestSecLevelByUdidAsync(queryParams);
 
+    ret = UpdateCallback(queryParams, callback);
+    ret = GetHighestSecLevelByUdidAsync(queryParams);
     DATA_SEC_LOG_INFO("DATASL_GetHighestSecLevelAsync done, ret %d!", ret);
     return ret;
 }

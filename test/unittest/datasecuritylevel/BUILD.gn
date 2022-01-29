@@ -30,9 +30,7 @@ ohos_unittest("DevSLMgrTest") {
   subsystem_name = "security"
   module_out_path = module_output_path
 
-  sources = [ "datasecuritylevel_test.cpp" ]
-
-  configs = [ ":datasecuritylevel_test_config" ]
+  sources = [ "DevSLMgrTest.cpp" ]
 
   deps = [ 
     "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel:datasecuritylevel",
@@ -43,9 +41,4 @@ ohos_unittest("DevSLMgrTest") {
     "dsoftbus_standard:softbus_client",
     "device_security_level:dslm_sdk",
   ]
-}
-
-group("datasecuritylevel_test") {
-  testonly = true
-  deps = [ ":DevSLMgrTest" ]
 }
