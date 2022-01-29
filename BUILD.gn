@@ -14,7 +14,6 @@
 import("//build/ohos.gni")
 group("dataclassification_build_module") {
   deps = [
-    "//base/security/dataclassification/interfaces/innerkits/fbe_iudf_xattr:fbe_iudf_xattr",
-    "//base/security/dataclassification/interfaces/innerkits/hwdevsl:hwdsl",
+    "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel:datasecuritylevel",
   ]
 }
