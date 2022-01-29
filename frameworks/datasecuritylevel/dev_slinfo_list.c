@@ -17,33 +17,30 @@
 #include "dev_slinfo_adpt.h"
 #include "dev_slinfo_log.h"
 
-#define WRITE_ONCE(var, val) \
-       (*((volatile typeof(val) *)(&(var))) = (val))
-
-DATASLListParams ListInit(void) {
-    pthread_mutex_lock(&gMutex); // 加锁
-    DATASLListParams list;
-    list = (DATASLListParams)malloc(100 * sizeof(DATASLListParams));
+struct DATASLListParams* ListInit(void)
+{
+    pthread_mutex_lock(&gMutex);
+    struct DATASLListParams *list;
+    list = (struct DATASLListParams *)malloc(sizeof(struct DATASLListParams));
     list->next = list;
     list->prev = list;
-    pthread_mutex_unlock(&gMutex); // 解锁
+    pthread_mutex_unlock(&gMutex);
     return list;
 }
 
-
-void Update(DATASLListParams new, DATASLListParams prev, DATASLListParams next)
+void Update(struct DATASLListParams *new, struct DATASLListParams *prev, struct DATASLListParams *next)
 {
     next->prev = new;
     new->next = next;
     new->prev = prev;
-    WRITE_ONCE(prev->next, new);
+    prev->next = new;
 }
 
-
-void ListPush(DATASLListParams list, void *callbackCac) {
+void ListPush(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
+{
     DATA_SEC_LOG_INFO("ListPush, ret!");
-    pthread_mutex_lock(&gMutex); // 加锁
-    DATASLListParams newList = (DATASLListParams)malloc(100 * sizeof(DATASLListParams));
+    pthread_mutex_lock(&gMutex);
+    struct DATASLListParams *newList = (struct DATASLListParams*)malloc(sizeof(struct DATASLListParams));
     if (list->prev == NULL) {
         list->prev = newList;
         list->next = newList;
@@ -52,17 +49,19 @@ void ListPush(DATASLListParams list, void *callbackCac) {
     } else {
         Update(newList, list->prev, list);
     }
-    newList->callbackCac = (DATASLCallbackParams)callbackCac;
-    pthread_mutex_unlock(&gMutex); // 解锁
+    newList->callbackParams = (struct DATASLCallbackParams*)callbackParams;
+    pthread_mutex_unlock(&gMutex);
     DATA_SEC_LOG_INFO("ListPush done, ret!");
 }
 
-void ListPop(DATASLListParams list,  void *callbackCac) {
+void ListPop(struct DATASLListParams *list,  struct DATASLCallbackParams *callbackParams)
+{
     DATA_SEC_LOG_INFO("ListPop, ret!");
-    pthread_mutex_lock(&gMutex); // 加锁
-    DATASLListParams pList = list->next;
+    pthread_mutex_lock(&gMutex);
+    struct DATASLListParams *pList = list->next;
     while (pList != NULL && pList != list) {
-        if (UdidCmp(pList->callbackCac->queryParams, ((DATASLCallbackParams)callbackCac)->queryParams) == SUCCESS) {
+        if (UdidCmp(pList->callbackParams->queryParams,
+            ((struct DATASLCallbackParams*)callbackParams)->queryParams) == SUCCESS) {
             pList->prev->next = pList->next;
             pList->next->prev = pList->prev;
             free(pList);
@@ -70,47 +69,50 @@ void ListPop(DATASLListParams list,  void *callbackCac) {
         }
         pList = pList->next;
     }
-    pthread_mutex_unlock(&gMutex); // 解锁
+    pthread_mutex_unlock(&gMutex);
     DATA_SEC_LOG_INFO("ListPop done, ret!");
 }
 
-void ListClear(DATASLListParams list) {
-    pthread_mutex_lock(&gMutex); // 加锁
-    DATASLListParams pList = list->next;
+void ListClear(struct DATASLListParams *list)
+{
+    pthread_mutex_lock(&gMutex);
+    struct DATASLListParams *pList = list->next;
     while (pList == NULL || pList != list) {
-        DATASLListParams delList = pList;
+        struct DATASLListParams *delList = pList;
         pList = pList->next;
         free(delList);
     }
-    pthread_mutex_unlock(&gMutex); // 解锁
+    pthread_mutex_unlock(&gMutex);
 }
 
-int32_t ListLength(DATASLListParams list) {
-    pthread_mutex_lock(&gMutex); // 加锁
-    DATASLListParams pList = list->next;
+int32_t ListLength(struct DATASLListParams *list)
+{
+    pthread_mutex_lock(&gMutex);
+    struct DATASLListParams *pList = list->next;
     int32_t listLength = 0;
     while (pList != NULL && pList != list) {
         listLength++;
         pList = pList->next;
     }
-    pthread_mutex_unlock(&gMutex); // 解锁
+    pthread_mutex_unlock(&gMutex);
     return listLength;
 }
 
-int32_t ListFind(DATASLListParams list, void *callbackCac)
+int32_t ListFind(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
 {
-    pthread_mutex_lock(&gMutex); // 加锁
+    pthread_mutex_lock(&gMutex);
     DATA_SEC_LOG_INFO("ListFind, ret!");
-    DATASLListParams pList = list->next;
+    struct DATASLListParams *pList = list->next;
     while (pList != NULL && pList != list) {
-        if (UdidCmp(pList->callbackCac->queryParams, ((DATASLCallbackParams)callbackCac)->queryParams) == SUCCESS) {
+        if (UdidCmp(pList->callbackParams->queryParams,
+            ((struct DATASLCallbackParams*)callbackParams)->queryParams) == SUCCESS) {
             DATA_SEC_LOG_INFO("ListFind fine done, ret!");
-            pthread_mutex_unlock(&gMutex); // 解锁
+            pthread_mutex_unlock(&gMutex);
             return SUCCESS;
         }
         pList = pList->next;
     }
     DATA_SEC_LOG_INFO("ListFind not find, ret!");
-    pthread_mutex_unlock(&gMutex); // 解锁
+    pthread_mutex_unlock(&gMutex);
     return DEVSL_ERROR;
 }

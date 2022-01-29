@@ -80,7 +80,7 @@ external_deps += [ "dataclassification:datasecuritylevel" ]
 1、同步接口使用示例如下：
 
 ```c++
-void CheckDestHighestSecurityLevel(DEVSLQueryParams *queryParams）
+void CheckDestHighestSecurityLevel(DEVSLQueryParams *queryParams)
 {
     // 数据风险等级
     uint32_t levelInfo = 0;

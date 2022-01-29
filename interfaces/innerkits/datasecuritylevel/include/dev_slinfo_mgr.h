@@ -52,7 +52,7 @@ int32_t DATASL_OnStart(void);
 
 void DATASL_OnStop(void);
 
-//Async
+// Async
 typedef void HigestSecInfoCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo);
 
 int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback);

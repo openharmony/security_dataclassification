@@ -23,28 +23,27 @@
 
 static pthread_mutex_t gMutex = PTHREAD_MUTEX_INITIALIZER;
 
-typedef struct g_DATASLCallbackParams{
+struct DATASLCallbackParams {
     DEVSLQueryParams *queryParams;
     HigestSecInfoCallback *callback;
-}*DATASLCallbackParams;
+};
 
-typedef struct g_DATASLListParams{
-    DATASLCallbackParams callbackCac;
-    struct g_DATASLListParams *prev;
-    struct g_DATASLListParams *next;
-}*DATASLListParams;
+struct DATASLListParams {
+    struct DATASLCallbackParams *callbackParams;
+    struct DATASLListParams *prev;
+    struct DATASLListParams *next;
+};
 
+struct DATASLListParams* ListInit(void);
 
-DATASLListParams ListInit(void);
+void ListPush(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
-void ListPush(DATASLListParams list, void *callbackCac);
+void ListPop(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
-void ListPop(DATASLListParams list, void *callbackCac);
+void ListClear(struct DATASLListParams *list);
 
-void ListClear(DATASLListParams list);
+int ListLength(struct DATASLListParams *list);
 
-int ListLength(DATASLListParams list);
-
-int32_t ListFind(DATASLListParams list, void *callbackCac);
+int32_t ListFind(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
 #endif

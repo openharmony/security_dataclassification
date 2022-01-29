@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
+#include <iostream>
 #include "gtest/gtest.h"
-
-#include "datasecuritylevel_test.h"
 #include "dev_slinfo_mgr.h"
 #include "securec.h"
 #include "softbus_bus_center.h"
 #include "dev_slinfo_adpt.h"
-#include <iostream>
+#include "DevSLMgrTest.h"
 
 using namespace testing::ext;
 
@@ -47,11 +46,11 @@ void DevSLMgrTest::TearDown() {}
 static void DATASL_GetUdidByOpp(DEVSLQueryParams *queryParams)
 {
     char udid[65] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-    (void)memcpy_s(queryParams->udid, 64, udid, 64);
-    queryParams->udidLen = 64;
+    (void)memcpy_s(queryParams->udid, MAX_UDID_LENGTH, udid, MAX_UDID_LENGTH);
+    queryParams->udidLen = MAX_UDID_LENGTH;
 }
 
-HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
 {
     int32_t ret;
 
@@ -59,7 +58,7 @@ HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
     EXPECT_EQ(SUCCESS, ret);
 }
 
-HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
 {
     int32_t ret;
     uint32_t levelInfo = 0;
@@ -69,7 +68,7 @@ HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
     EXPECT_EQ(ERR_INVALID_PARA, ret);
 }
 
-HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
 {
     int32_t ret;
     
@@ -82,7 +81,7 @@ HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
     EXPECT_EQ(ERR_INVALID_PARA, ret);
 }
  
-HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
 {
     int32_t ret;
     uint32_t levelInfo = 0;
@@ -97,13 +96,13 @@ HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
     EXPECT_EQ(ERR_NOEXIST_DEVICE, ret);
 }
 
-//Aysnc
-void tmpCallback000(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
+// Aysnc
+static void tmpCallback000(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
     EXPECT_EQ(ERR_INVALID_PARA, result);
 }
 
-HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
 {
     int32_t ret;
 
@@ -112,7 +111,7 @@ HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
     EXPECT_EQ(ERR_INVALID_PARA, ret);
 }
 
-HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
 {
     int32_t ret;
     DEVSLQueryParams queryParams;
@@ -121,15 +120,15 @@ HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
 
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, nullptr);
     EXPECT_EQ(ERR_INVALID_PARA, ret);
-    
 }
 
-void tmpCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
+static void tmpCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
+    printf("yes\n");
     EXPECT_EQ(ERR_NOEXIST_DEVICE, result);
     EXPECT_EQ(DATA_SEC_LEVEL0, static_cast<int32_t>(levelInfo));
 }
-HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
 {
     int32_t ret;
     DEVSLQueryParams queryParams;
