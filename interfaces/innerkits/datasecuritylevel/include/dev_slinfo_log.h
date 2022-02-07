@@ -13,37 +13,21 @@
  * limitations under the License.
  */
 
-#include "dev_slinfo_mgr.h"
+#ifndef DEV_SLINFO_LOG_H
+#define DEV_SLINFO_LOG_H
 
-#ifdef __cplusplus
-extern "C" {
+#include <stdio.h>
+
+#include "hilog/log.h"
+
+#ifdef LOG_TAG
+#undef LOG_TAG
 #endif
+#define LOG_TAG "DATA_SEC_LEVEL: "
 
-#define DEVSL_API __attribute__ ((visibility ("default")))
-
-DEVSL_API int32_t DEVSL_OnStart(int32_t maxDevNum)
-{
-    return DEVSL_SUCCESS;
-}
-
-DEVSL_API void DEVSL_ToFinish(void)
-{
-    return;
-}
-
-DEVSL_API int32_t DEVSL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo)
-{
-    *levelInfo = DATA_SEC_LEVEL3;
-    return DEVSL_SUCCESS;
-}
-
-DEVSL_API int32_t DEVSL_GetLocalCertData(uint8_t *buff, uint32_t bufSz, uint32_t *dataLen)
-{
-    buff[0] = 0;
-    *dataLen = 0;
-    return DEVSL_SUCCESS;
-}
-#ifdef __cplusplus
-}
+#define DATA_SEC_LOG_DEBUG(fmt, ...) HILOG_DEBUG(LOG_CORE, fmt, ##__VA_ARGS__)
+#define DATA_SEC_LOG_INFO(fmt, ...) HILOG_INFO(LOG_CORE, fmt, ##__VA_ARGS__)
+#define DATA_SEC_LOG_WARN(fmt, ...) HILOG_WARN(LOG_CORE, fmt, ##__VA_ARGS__)
+#define DATA_SEC_LOG_ERROR(fmt, ...) HILOG_ERROR(LOG_CORE, fmt, ##__VA_ARGS__)
+#define DATA_SEC_LOG_FATAL(fmt, ...) HILOG_FATAL(LOG_CORE, fmt, ##__VA_ARGS__)
 #endif
-
