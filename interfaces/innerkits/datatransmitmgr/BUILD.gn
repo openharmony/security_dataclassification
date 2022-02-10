@@ -16,24 +16,24 @@ import("//build/ohos.gni")
 ################################################################
 # C, Main source file here.
 ################################################################
-config("datasecuritylevel_config") {
+config("datatransmitmgr_config") {
   include_dirs = [ "include" ]
 }
 
-ohos_shared_library("datasecuritylevel") {
+ohos_shared_library("data_transit_mgr") {
   subsystem_name = "security"
   part_name = "dataclassification"
 
-  public_configs = [ ":datasecuritylevel_config" ]
+  public_configs = [ ":datatransmitmgr_config" ]
 
   include_dirs = [
     "include",
   ]
 
   sources = [
-    "//base/security/dataclassification/frameworks/datasecuritylevel/dev_slinfo_mgr.c",
-    "//base/security/dataclassification/frameworks/datasecuritylevel/dev_slinfo_list.c",
-    "//base/security/dataclassification/frameworks/datasecuritylevel/dev_slinfo_adpt.c",
+    "//base/security/dataclassification/frameworks/datatransmitmgr/dev_slinfo_mgr.c",
+    "//base/security/dataclassification/frameworks/datatransmitmgr/dev_slinfo_list.c",
+    "//base/security/dataclassification/frameworks/datatransmitmgr/dev_slinfo_adpt.c",
   ]
 
   deps = [ 

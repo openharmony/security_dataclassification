@@ -29,13 +29,13 @@
 ```
 base/security/dataclassification
 ├── frameworks                        
-│   └── datasecuritylevel             # 代码实现
+│   └── datatransmitmgr             # 代码实现
 ├── interfaces                        # 接口API代码
 │   └── innerkits
-│       └── datasecuritylevel
+│       └── datatransmitmgr
 └── text                              #测试代码
     └── unittest
-        └── datasecuritylevel
+        └── datatransmitmgr
 ```
 
 
@@ -66,7 +66,7 @@ base/security/dataclassification
 1、编译依赖添加
 
 ```
-external_deps += [ "dataclassification:datasecuritylevel" ]
+external_deps += [ "datatransmitmgr:data_transit_mgr" ]
 ```
 
 2、头文件添加

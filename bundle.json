@@ -13,7 +13,9 @@
         "name": "dataclassification",
         "subsystem": "security",
         "syscap": [],
-        "features": [],
+        "features": [
+            "dataclassification_datatransmitmgr"
+        ],
         "adapted_system_type": [
             "standard"
         ],
@@ -33,17 +35,17 @@
             ],
             "inner_kits": [
                 {
-                    "name": "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel:datasecuritylevel",
+                    "name": "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr",
                     "header": {
                         "header_files": [
                             "dev_slinfo_mgr.h"
                         ],
-                        "header_base": "//base/security/dataclassification/interfaces/innerkits/datasecuritylevel/include"
+                        "header_base": "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr/include"
                     }
                 }
             ],
             "test": [
-                "//base/security/dataclassification/test/unittest/datasecuritylevel:DevSLMgrTest"
+                "//base/security/dataclassification/test/unittest/datatransmitmgr:DevSLMgrTest"
             ]
         }
     }
