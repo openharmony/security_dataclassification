@@ -62,7 +62,7 @@ int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen);
 
 int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel);
 
-int32_t UpdateDATASLCallbackParams(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback);
+int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback);
 
 #ifdef __cplusplus
 }

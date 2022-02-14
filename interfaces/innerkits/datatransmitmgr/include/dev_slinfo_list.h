@@ -21,8 +21,6 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-static pthread_mutex_t gMutex = PTHREAD_MUTEX_INITIALIZER;
-
 struct DATASLCallbackParams {
     DEVSLQueryParams queryParams;
     HigestSecInfoCallback *callback;
@@ -34,7 +32,7 @@ struct DATASLListParams {
     struct DATASLListParams *next;
 };
 
-struct DATASLListParams* ListInit(void);
+struct DATASLListParams* InitList(void);
 
 int32_t PushList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
@@ -45,5 +43,13 @@ void ClearList(struct DATASLListParams *list);
 int GetListLength(struct DATASLListParams *list);
 
 int32_t FindList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+
+void InitPthreadMutex(void);
+
+void DestroyPthreadMutex(void);
+
+void LockPthreadMutex(void);
+
+void UnlockPthreadMutex(void);
 
 #endif
