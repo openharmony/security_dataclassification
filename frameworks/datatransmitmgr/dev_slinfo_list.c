@@ -39,11 +39,14 @@ void Update(struct DATASLListParams *new, struct DATASLListParams *prev, struct 
     prev->next = new;
 }
 
-void PushList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
+int32_t PushList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
 {
     DATA_SEC_LOG_INFO("PushList, ret!");
     pthread_mutex_lock(&gMutex);
     struct DATASLListParams *newList = (struct DATASLListParams*)malloc(sizeof(struct DATASLListParams));
+    if (newList == NULL) {
+        return DEVSL_ERR_MALLOC_FAIL;
+    }
     if (list->prev == NULL) {
         list->prev = newList;
         list->next = newList;
@@ -55,6 +58,7 @@ void PushList(struct DATASLListParams *list, struct DATASLCallbackParams *callba
     newList->callbackParams = (struct DATASLCallbackParams*)callbackParams;
     pthread_mutex_unlock(&gMutex);
     DATA_SEC_LOG_INFO("PushList done, ret!");
+    return SUCCESS;
 }
 
 void PopList(struct DATASLListParams *list,  struct DATASLCallbackParams *callbackParams)
@@ -93,13 +97,13 @@ int32_t GetListLength(struct DATASLListParams *list)
 {
     pthread_mutex_lock(&gMutex);
     struct DATASLListParams *pList = list->next;
-    int32_t GetListLength = 0;
+    int32_t listLength = 0;
     while (pList != NULL && pList != list) {
-        GetListLength++;
+        listLength++;
         pList = pList->next;
     }
     pthread_mutex_unlock(&gMutex);
-    return GetListLength;
+    return listLength;
 }
 
 int32_t FindList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
