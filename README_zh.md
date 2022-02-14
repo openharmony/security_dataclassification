@@ -66,7 +66,7 @@ base/security/dataclassification
 1、编译依赖添加
 
 ```
-external_deps += [ "datatransmitmgr:data_transit_mgr" ]
+external_deps += [ "dataclassification:data_transit_mgr" ]
 ```
 
 2、头文件添加

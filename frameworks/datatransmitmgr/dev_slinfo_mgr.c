@@ -109,7 +109,11 @@ DEVSL_API int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, 
         return ERR_INVALID_PARA;
     }
 
-    ret = UpdateCallback(queryParams, callback);
+    ret = UpdateDATASLCallbackParams(queryParams, callback);
+    if (ret != SUCCESS) {
+        return ret;
+    }
+
     ret = GetHighestSecLevelByUdidAsync(queryParams);
     DATA_SEC_LOG_INFO("DATASL_GetHighestSecLevelAsync done, ret %d!", ret);
     return ret;
