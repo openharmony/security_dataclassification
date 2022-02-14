@@ -44,6 +44,7 @@ enum {
     DEVSL_ERR_REPEATED_SERVICES = 103,
     DEVSL_ERR_MEM_CPY = 104,
     DEVSL_ERR_DEVICE_SEC_SDK_INIT = 105,
+    DEVSL_ERR_MALLOC_FAIL = 106,
 };
 
 int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo);

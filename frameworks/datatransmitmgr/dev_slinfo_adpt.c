@@ -31,6 +31,9 @@ static void DestroyDeviceSecEnv(void)
         dlclose(g_deviceSecDlhandle);
         g_deviceSecDlhandle = NULL;
     }
+    if (g_callback != NULL) {
+        ClearList(g_callback);
+    }
     return;
 }
 
@@ -202,10 +205,10 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
         struct DATASLListParams *tmpCallback = g_callback->next;
         while (tmpCallback != NULL && tmpCallback != g_callback) {
             struct DATASLListParams *nextCallback = tmpCallback->next;
-            int32_t result = UdidCmp(tmpCallback->callbackParams->queryParams, &queryParams);
+            int32_t result = CompareUdid(&(tmpCallback->callbackParams->queryParams), &queryParams);
             if (result == SUCCESS) {
                 tmpCallback->callbackParams->callback(&queryParams, ret, levelInfo);
-                ListPop(g_callback, tmpCallback->callbackParams);
+                PopList(g_callback, tmpCallback->callbackParams);
             }
             tmpCallback = nextCallback;
         }
@@ -242,17 +245,30 @@ int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen)
     return ret;
 }
 
-int32_t UdidCmp(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParamsR)
+int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParamsR)
 {
+    DATA_SEC_LOG_INFO("DATASL: Enter CompareUdid!");
     uint32_t i;
+
+    if (queryParamsL == NULL) {
+        DATA_SEC_LOG_INFO("DATASL: queryParamsL is NULL!");
+    }
+    if (queryParamsR ==NULL) {
+        DATA_SEC_LOG_INFO("DATASL: queryParamsR is NULL!");
+    }
+
+    DATA_SEC_LOG_INFO("DATASL: %d, %d     length??",queryParamsL->udidLen, queryParamsR->udidLen );
+
     if (queryParamsL->udidLen != queryParamsR->udidLen) {
         return DEVSL_ERROR;
     }
+    DATA_SEC_LOG_INFO("DATASL: Enter UdidCmp_001!");
     for (i = 0; i < queryParamsL->udidLen; i++) {
         if (queryParamsL->udid[i] != queryParamsR->udid[i]) {
             return DEVSL_ERROR;
         }
     }
+    DATA_SEC_LOG_INFO("DATASL: Enter UdidCmp_002!");
     return SUCCESS;
 }
 
@@ -283,7 +299,7 @@ int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel)
     return DATA_SEC_LEVEL0;
 }
 
-int32_t UpdateCallback(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback)
+int32_t UpdateDATASLCallbackParams(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback)
 {
     int32_t ret;
     int32_t result = DEVSL_ERR_SERVICES_TOO_MANY;
@@ -292,19 +308,27 @@ int32_t UpdateCallback(DEVSLQueryParams *queryParams, HigestSecInfoCallback *cal
         g_callback = ListInit();
     }
 
-    struct DATASLCallbackParams newList;
-    newList.queryParams = queryParams;
-    newList.callback = callback;
-
-    ret = ListLength(g_callback);
-    if (ret == MAX_LIST_SUM) {
-        g_callback->next->callbackParams->callback(queryParams, result, levelInfo);
-        ListPop(g_callback, g_callback->next->callbackParams);
+    if (g_callback == NULL) {
+        return DEVSL_ERR_MALLOC_FAIL;
     }
 
-    ret = ListFind(g_callback, &newList);
+    struct DATASLCallbackParams *newListNode = (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
+    if (memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams->udid, queryParams->udidLen) != EOK) {
+        DATA_SEC_LOG_ERROR("UpdateDATASLCallbackParams, udid memcpy failed");
+        return DEVSL_ERR_MEM_CPY;
+    }
+    newListNode->queryParams.udidLen = queryParams->udidLen;
+    newListNode->callback = callback;
+
+    ret = GetListLength(g_callback);
+    if (ret == MAX_LIST_SUM) {
+        g_callback->next->callbackParams->callback(queryParams, result, levelInfo);
+        PopList(g_callback, g_callback->next->callbackParams);
+    }
+
+    ret = FindList(g_callback, newListNode);
     if (ret != SUCCESS) {
-        ListPush(g_callback, &newList);
+        PushList(g_callback, newListNode);
     }
     return SUCCESS;
 }

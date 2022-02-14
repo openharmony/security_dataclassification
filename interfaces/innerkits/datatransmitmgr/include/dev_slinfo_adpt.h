@@ -56,13 +56,13 @@ void FinishDevslEnv(void);
 
 int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLevel);
 
-int32_t UdidCmp(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParamsR);
+int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParamsR);
 
 int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen);
 
 int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel);
 
-int32_t UpdateCallback(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback);
+int32_t UpdateDATASLCallbackParams(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback);
 
 #ifdef __cplusplus
 }
