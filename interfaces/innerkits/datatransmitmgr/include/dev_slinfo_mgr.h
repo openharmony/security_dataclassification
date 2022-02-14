@@ -45,6 +45,8 @@ enum {
     DEVSL_ERR_MEM_CPY = 104,
     DEVSL_ERR_DEVICE_SEC_SDK_INIT = 105,
     DEVSL_ERR_MALLOC_FAIL = 106,
+    DEVSL_MUTEX_UNLOCK = 107,
+    DEVSL_ERR_INIT_MUTEX_LOCK = 108,
 };
 
 int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo);

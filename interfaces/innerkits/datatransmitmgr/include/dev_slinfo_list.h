@@ -16,10 +16,8 @@
 #ifndef DEV_SLINFO_LIST_H
 #define DEV_SLINFO_LIST_H
 
-#include "dev_slinfo_mgr.h"
-
 #include <stdlib.h>
-#include <pthread.h>
+#include "dev_slinfo_mgr.h"
 
 struct DATASLCallbackParams {
     DEVSLQueryParams queryParams;
@@ -44,12 +42,10 @@ int GetListLength(struct DATASLListParams *list);
 
 int32_t FindList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
-void InitPthreadMutex(void);
+int32_t InitPthreadMutex(void);
 
 void DestroyPthreadMutex(void);
 
-void LockPthreadMutex(void);
-
-void UnlockPthreadMutex(void);
+void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo);
 
 #endif

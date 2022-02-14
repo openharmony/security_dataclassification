@@ -14,6 +14,7 @@
  */
 
 #include "dev_slinfo_list.h"
+#include <pthread.h>
 #include "dev_slinfo_adpt.h"
 #include "dev_slinfo_log.h"
 
@@ -129,22 +130,33 @@ int32_t FindList(struct DATASLListParams *list, struct DATASLCallbackParams *cal
     return DEVSL_ERROR;
 }
 
-void InitPthreadMutex(void)
+void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
-    pthread_mutex_init(&gMutex, NULL);
+    pthread_mutex_lock(&gMutex);
+    struct DATASLListParams *tmpCallback = list->next;
+    while (tmpCallback != NULL && tmpCallback != list) {
+        struct DATASLListParams *nextCallback = tmpCallback->next;
+        int32_t result = CompareUdid(&(tmpCallback->callbackParams->queryParams), queryParams);
+        if (result == SUCCESS) {
+            tmpCallback->callbackParams->callback(&(tmpCallback->callbackParams->queryParams), result, levelInfo);
+            tmpCallback->prev->next = tmpCallback->next;
+            tmpCallback->next->prev = tmpCallback->prev;
+            free(tmpCallback->callbackParams);
+            free(tmpCallback);
+        }
+        tmpCallback = nextCallback;
+    }
+    pthread_mutex_unlock(&gMutex);
+}
+
+int32_t InitPthreadMutex(void)
+{
+    int32_t ret;
+    ret = pthread_mutex_init(&gMutex, NULL);
+    return ret;
 }
 
 void DestroyPthreadMutex(void)
 {
     pthread_mutex_destroy(&gMutex);
-}
-
-void LockPthreadMutex(void)
-{
-    pthread_mutex_lock(&gMutex);
-}
-
-void UnlockPthreadMutex(void)
-{
-    pthread_mutex_unlock(&gMutex);
 }
