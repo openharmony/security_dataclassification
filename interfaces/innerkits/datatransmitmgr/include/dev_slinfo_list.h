@@ -36,7 +36,7 @@ struct DATASLListParams {
 
 struct DATASLListParams* ListInit(void);
 
-void PushList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+int32_t PushList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
 void PopList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 

@@ -250,25 +250,14 @@ int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParam
     DATA_SEC_LOG_INFO("DATASL: Enter CompareUdid!");
     uint32_t i;
 
-    if (queryParamsL == NULL) {
-        DATA_SEC_LOG_INFO("DATASL: queryParamsL is NULL!");
-    }
-    if (queryParamsR ==NULL) {
-        DATA_SEC_LOG_INFO("DATASL: queryParamsR is NULL!");
-    }
-
-    DATA_SEC_LOG_INFO("DATASL: %d, %d     length??",queryParamsL->udidLen, queryParamsR->udidLen );
-
     if (queryParamsL->udidLen != queryParamsR->udidLen) {
         return DEVSL_ERROR;
     }
-    DATA_SEC_LOG_INFO("DATASL: Enter UdidCmp_001!");
     for (i = 0; i < queryParamsL->udidLen; i++) {
         if (queryParamsL->udid[i] != queryParamsR->udid[i]) {
             return DEVSL_ERROR;
         }
     }
-    DATA_SEC_LOG_INFO("DATASL: Enter UdidCmp_002!");
     return SUCCESS;
 }
 
@@ -313,6 +302,9 @@ int32_t UpdateDATASLCallbackParams(DEVSLQueryParams *queryParams, HigestSecInfoC
     }
 
     struct DATASLCallbackParams *newListNode = (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
+    if (newListNode ==NULL) {
+        return DEVSL_ERR_MALLOC_FAIL;
+    }
     if (memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams->udid, queryParams->udidLen) != EOK) {
         DATA_SEC_LOG_ERROR("UpdateDATASLCallbackParams, udid memcpy failed");
         return DEVSL_ERR_MEM_CPY;
@@ -328,7 +320,10 @@ int32_t UpdateDATASLCallbackParams(DEVSLQueryParams *queryParams, HigestSecInfoC
 
     ret = FindList(g_callback, newListNode);
     if (ret != SUCCESS) {
-        PushList(g_callback, newListNode);
+        ret = PushList(g_callback, newListNode);
+        if (ret != SUCCESS) {
+            return ret;
+        }
     }
     return SUCCESS;
 }
