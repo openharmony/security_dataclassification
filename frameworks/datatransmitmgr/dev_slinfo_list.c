@@ -17,7 +17,9 @@
 #include "dev_slinfo_adpt.h"
 #include "dev_slinfo_log.h"
 
-struct DATASLListParams* ListInit(void)
+pthread_mutex_t gMutex;
+
+struct DATASLListParams* InitList(void)
 {
     pthread_mutex_lock(&gMutex);
     struct DATASLListParams *list = (struct DATASLListParams *)malloc(sizeof(struct DATASLListParams));
@@ -31,7 +33,7 @@ struct DATASLListParams* ListInit(void)
     return list;
 }
 
-void Update(struct DATASLListParams *new, struct DATASLListParams *prev, struct DATASLListParams *next)
+static void Update(struct DATASLListParams *new, struct DATASLListParams *prev, struct DATASLListParams *next)
 {
     next->prev = new;
     new->next = next;
@@ -45,6 +47,7 @@ int32_t PushList(struct DATASLListParams *list, struct DATASLCallbackParams *cal
     pthread_mutex_lock(&gMutex);
     struct DATASLListParams *newList = (struct DATASLListParams*)malloc(sizeof(struct DATASLListParams));
     if (newList == NULL) {
+        pthread_mutex_unlock(&gMutex);
         return DEVSL_ERR_MALLOC_FAIL;
     }
     if (list->prev == NULL) {
@@ -110,12 +113,6 @@ int32_t FindList(struct DATASLListParams *list, struct DATASLCallbackParams *cal
 {
     pthread_mutex_lock(&gMutex);
     DATA_SEC_LOG_INFO("DATASL: FindList, ret!");
-    if (list == NULL) {
-        DATA_SEC_LOG_INFO("DATASL: list is NULL!");
-    }
-    if (callbackParams == NULL) {
-        DATA_SEC_LOG_INFO("DATASL: callbackParams is NULL!");
-    }
     struct DATASLListParams *pList = list->next;
     DATA_SEC_LOG_INFO("DATASL: list is not NULL!");
     while (pList != NULL && pList != list) {
@@ -130,4 +127,24 @@ int32_t FindList(struct DATASLListParams *list, struct DATASLCallbackParams *cal
     DATA_SEC_LOG_INFO("FindList not find, ret!");
     pthread_mutex_unlock(&gMutex);
     return DEVSL_ERROR;
+}
+
+void InitPthreadMutex(void)
+{
+    pthread_mutex_init(&gMutex, NULL);
+}
+
+void DestroyPthreadMutex(void)
+{
+    pthread_mutex_destroy(&gMutex);
+}
+
+void LockPthreadMutex(void)
+{
+    pthread_mutex_lock(&gMutex);
+}
+
+void UnlockPthreadMutex(void)
+{
+    pthread_mutex_unlock(&gMutex);
 }
