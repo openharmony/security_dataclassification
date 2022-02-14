@@ -135,6 +135,6 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
     DATASL_GetUdidByOpp(&queryParams);
 
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, &tmpCallback);
-    EXPECT_EQ(ERR_NOEXIST_DEVICE, result);
+    EXPECT_EQ(ERR_NOEXIST_DEVICE, ret);
     DATASL_OnStop();
 }

@@ -106,10 +106,14 @@ int32_t StartDevslEnv()
     if (ret != SUCCESS) {
         return DEVSL_ERR_DEVICE_SEC_SDK_INIT;
     }
-    InitPthreadMutex();
 
     if (g_callback == NULL) {
+        ret = InitPthreadMutex();
         g_callback = InitList();
+    }
+    
+    if (ret != SUCCESS) {
+        return DEVSL_ERR_INIT_MUTEX_LOCK;
     }
 
     if (g_callback == NULL) {
@@ -129,17 +133,17 @@ int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLev
 {
     DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdid!");
     if (g_deviceSecEnv.requestDeviceSecurityInfo == NULL) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid: requestDeviceSecurityInfo is incalid");
+        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid: requestDeviceSecurityInfo is invalid");
         return DEVSL_ERROR;
     }
 
     if (g_deviceSecEnv.freeDeviceSecurityInfo == NULL) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid: freeDeviceSecurityInfo is incalid");
+        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid: freeDeviceSecurityInfo is invalid");
         return DEVSL_ERROR;
     }
 
     if (g_deviceSecEnv.getDeviceSecurityLevelValue == NULL) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecByUdid: getDeviceSecurityLevelValue is incalid");
+        DATA_SEC_LOG_ERROR("GetDeviceSecByUdid: getDeviceSecurityLevelValue is invalid");
         return DEVSL_ERROR;
     }
 
@@ -177,26 +181,24 @@ int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLev
 // Async
 void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSecurityInfo *info)
 {
-    LockPthreadMutex();
     DATA_SEC_LOG_INFO("Enter OnApiDeviceSecInfoCallback!");
     if (identify == NULL) {
         DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback: DeviceIdentify is null!");
-        UnlockPthreadMutex();
         return;
     }
     int32_t ret = DEVSL_SUCCESS;
 
-    if(info == NULL) {
+    if (info == NULL) {
         DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback: DeviceSecurityInfo is null!");
         ret = DEVSL_ERROR;
     }
     if (g_deviceSecEnv.getDeviceSecurityLevelValue == NULL) {
-        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: getDeviceSecValue is incalid");
+        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: getDeviceSecValue is invalid");
         ret = DEVSL_ERROR;
     }
 
     if (g_deviceSecEnv.freeDeviceSecurityInfo == NULL) {
-        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: freeDeviceSecurityInfo is incalid");
+        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: freeDeviceSecurityInfo is invalid");
         ret = DEVSL_ERROR;
     }
 
@@ -218,33 +220,21 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
 
     if (memcpy_s(queryParams.udid, DEVICE_ID_MAX_LEN, identify->identity, identify->length) != EOK) {
         DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback, udid memcpy failed");
-        UnlockPthreadMutex();
         return;
     }
     queryParams.udidLen = identify->length;
 
     if (g_callback != NULL) {
-        struct DATASLListParams *tmpCallback = g_callback->next;
-        while (tmpCallback != NULL && tmpCallback != g_callback) {
-            struct DATASLListParams *nextCallback = tmpCallback->next;
-            int32_t result = CompareUdid(&(tmpCallback->callbackParams->queryParams), &queryParams);
-            if (result == SUCCESS) {
-                tmpCallback->callbackParams->callback(&(tmpCallback->callbackParams->queryParams), ret, levelInfo);
-                UnlockPthreadMutex();
-                PopList(g_callback, tmpCallback->callbackParams);
-            }
-            tmpCallback = nextCallback;
-        }
+        LookupCallback(g_callback, &queryParams, ret, levelInfo);
     }
     DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback done, ret %d!", ret);
-    UnlockPthreadMutex();
 }
 
 int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen)
 {
     DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdidAsync!");
     if (g_deviceSecEnv.requestDeviceSecurityInfoAsync == NULL) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync: requestDeviceSecurityInfoAsync is incalid");
+        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync: requestDeviceSecurityInfoAsync is invalid");
         return DEVSL_ERROR;
     }
 
@@ -316,7 +306,8 @@ int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCal
     int32_t result = DEVSL_ERR_SERVICES_TOO_MANY;
     int32_t levelInfo = DEFAULT_DEV_SEC_LEVEL;
 
-    struct DATASLCallbackParams *newListNode = (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
+    struct DATASLCallbackParams *newListNode =
+        (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
     if (newListNode == NULL) {
         return DEVSL_ERR_MALLOC_FAIL;
     }
