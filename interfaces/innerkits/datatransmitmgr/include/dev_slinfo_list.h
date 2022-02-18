@@ -16,15 +16,11 @@
 #ifndef DEV_SLINFO_LIST_H
 #define DEV_SLINFO_LIST_H
 
+#include <stdlib.h>
 #include "dev_slinfo_mgr.h"
 
-#include <stdlib.h>
-#include <pthread.h>
-
-static pthread_mutex_t gMutex = PTHREAD_MUTEX_INITIALIZER;
-
 struct DATASLCallbackParams {
-    DEVSLQueryParams *queryParams;
+    DEVSLQueryParams queryParams;
     HigestSecInfoCallback *callback;
 };
 
@@ -34,16 +30,22 @@ struct DATASLListParams {
     struct DATASLListParams *next;
 };
 
-struct DATASLListParams* ListInit(void);
+struct DATASLListParams* InitList(void);
 
-void ListPush(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+int32_t PushList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
-void ListPop(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+void PopList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
-void ListClear(struct DATASLListParams *list);
+void ClearList(struct DATASLListParams *list);
 
-int ListLength(struct DATASLListParams *list);
+int GetListLength(struct DATASLListParams *list);
 
-int32_t ListFind(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+int32_t FindList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+
+int32_t InitPthreadMutex(void);
+
+void DestroyPthreadMutex(void);
+
+void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo);
 
 #endif
