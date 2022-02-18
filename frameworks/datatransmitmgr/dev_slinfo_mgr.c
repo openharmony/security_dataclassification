@@ -45,7 +45,7 @@ static int32_t GetHigestSecLevelByUdid(DEVSLQueryParams *queryParams, uint32_t *
 
 DEVSL_API int32_t DATASL_OnStart(void)
 {
-    int32_t ret = 0;
+    int32_t ret;
 
     DATA_SEC_LOG_INFO("Enter DATASL_Onstart");
     ret = StartDevslEnv();
@@ -109,7 +109,11 @@ DEVSL_API int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, 
         return ERR_INVALID_PARA;
     }
 
-    ret = UpdateCallback(queryParams, callback);
+    ret = UpdateCallbackListParams(queryParams, callback);
+    if (ret != SUCCESS) {
+        return ret;
+    }
+
     ret = GetHighestSecLevelByUdidAsync(queryParams);
     DATA_SEC_LOG_INFO("DATASL_GetHighestSecLevelAsync done, ret %d!", ret);
     return ret;
