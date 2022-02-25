@@ -136,8 +136,8 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
     struct DATASLListParams *tmpCallback = list->next;
     while (tmpCallback != NULL && tmpCallback != list) {
         struct DATASLListParams *nextCallback = tmpCallback->next;
-        int32_t result = CompareUdid(&(tmpCallback->callbackParams->queryParams), queryParams);
-        if (result == SUCCESS) {
+        int32_t ret = CompareUdid(&(tmpCallback->callbackParams->queryParams), queryParams);
+        if (ret == SUCCESS) {
             tmpCallback->callbackParams->callback(&(tmpCallback->callbackParams->queryParams), result, levelInfo);
             tmpCallback->prev->next = tmpCallback->next;
             tmpCallback->next->prev = tmpCallback->prev;
