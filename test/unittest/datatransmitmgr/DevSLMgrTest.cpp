@@ -55,7 +55,7 @@ static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
     int32_t ret;
 
     ret = DATASL_OnStart();
-    EXPECT_EQ(SUCCESS, ret);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
@@ -65,7 +65,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
 
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevel(nullptr, &levelInfo);
-    EXPECT_EQ(ERR_INVALID_PARA, ret);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
@@ -78,7 +78,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
 
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevel(&queryParams, nullptr);
-    EXPECT_EQ(ERR_INVALID_PARA, ret);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 }
  
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
@@ -99,7 +99,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
 // Aysnc
 static void tmpCallback000(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
-    EXPECT_EQ(ERR_INVALID_PARA, result);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, result);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
@@ -108,7 +108,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
 
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevelAsync(nullptr, &tmpCallback000);
-    EXPECT_EQ(ERR_INVALID_PARA, ret);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
@@ -119,7 +119,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
     DATASL_GetUdidByOpp(&queryParams);
 
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, nullptr);
-    EXPECT_EQ(ERR_INVALID_PARA, ret);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 }
 
 static void tmpCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
