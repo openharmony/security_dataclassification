@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -38,7 +38,7 @@ void RemoveListNode(struct DATASLListParams *list, struct DATASLCallbackParams *
 
 void ClearList(struct DATASLListParams *list);
 
-int GetListLength(struct DATASLListParams *list);
+int32_t GetListLength(struct DATASLListParams *list);
 
 int32_t FindListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 

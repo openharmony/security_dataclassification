@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,13 +23,15 @@ pthread_mutex_t gMutex;
 
 struct DATASLListParams* InitList(void)
 {
-
+    pthread_mutex_lock(&gMutex);
     struct DATASLListParams *list = (struct DATASLListParams *)malloc(sizeof(struct DATASLListParams));
     if (list == NULL) {
+        pthread_mutex_unlock(&gMutex);
         return NULL;
     }
     list->next = list;
     list->prev = list;
+    pthread_mutex_unlock(&gMutex);
     return list;
 }
 
@@ -43,7 +45,6 @@ static void UpdateListNode(struct DATASLListParams *new, struct DATASLListParams
 
 int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
 {
-
     pthread_mutex_lock(&gMutex);
     struct DATASLListParams *newList = (struct DATASLListParams*)malloc(sizeof(struct DATASLListParams));
     if (newList == NULL) {
@@ -128,7 +129,8 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
         struct DATASLListParams *nextCallback = tmpCallback->next;
         ret = CompareUdid(&(tmpCallback->callbackParams->queryParams), queryParams);
         if (ret == DEVSL_SUCCESS) {
-            (void)memcpy_s(&tmpCallbackParams.queryParams, sizeof(DEVSLQueryParams), queryParams, sizeof(DEVSLQueryParams));
+            (void)memcpy_s(&tmpCallbackParams.queryParams, sizeof(DEVSLQueryParams),
+                queryParams, sizeof(DEVSLQueryParams));
             tmpCallbackParams.callback = tmpCallback->callbackParams->callback;
             tmpCallback->prev->next = tmpCallback->next;
             tmpCallback->next->prev = tmpCallback->prev;

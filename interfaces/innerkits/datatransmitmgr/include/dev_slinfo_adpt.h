@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -63,7 +63,6 @@ int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen);
 int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel);
 
 int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback);
-void CallbackForDeviceErr(DEVSLQueryParams *queryParams, int32_t result);
 
 #ifdef __cplusplus
 }
