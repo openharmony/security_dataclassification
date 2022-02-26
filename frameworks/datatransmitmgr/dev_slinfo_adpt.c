@@ -283,7 +283,7 @@ int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel)
     } devTypeMap[] = {
         { DEV_SEC_LEVEL1, DATA_SEC_LEVEL1 },
         { DEV_SEC_LEVEL2, DATA_SEC_LEVEL2 },
-        { DEV_SEC_LEVEL3, DATA_SEC_LEVEL4 },
+        { DEV_SEC_LEVEL3, DATA_SEC_LEVEL3 },
         { DEV_SEC_LEVEL4, DATA_SEC_LEVEL4 },
         { DEV_SEC_LEVEL5, DATA_SEC_LEVEL4 },
     };
@@ -313,6 +313,7 @@ int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCal
     }
     if (memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams->udid, queryParams->udidLen) != EOK) {
         DATA_SEC_LOG_ERROR("UpdateCallbackListParams, udid memcpy failed");
+        free(newListNode);
         return DEVSL_ERR_MEM_CPY;
     }
     newListNode->queryParams.udidLen = queryParams->udidLen;
