@@ -20,73 +20,75 @@
 #include "dev_slinfo_log.h"
 #include "dev_slinfo_mgr.h"
 
-void *g_deviceSecLevelHanle = NULL;
+#define MAX_LIST_LENGTH 128
+
+void *g_deviceSecLevelHandle = NULL;
 DeviceSecEnv g_deviceSecEnv;
-static struct DATASLListParams *g_callback = NULL;
+static struct DATASLListParams *g_callbackList = NULL;
 
 static void DestroyDeviceSecEnv(void)
 {
-    if (g_deviceSecLevelHanle != NULL) {
+    if (g_deviceSecLevelHandle != NULL) {
         (void)memset_s(&g_deviceSecEnv, sizeof(g_deviceSecEnv), 0, sizeof(g_deviceSecEnv));
-        dlclose(g_deviceSecLevelHanle);
-        g_deviceSecLevelHanle = NULL;
+        dlclose(g_deviceSecLevelHandle);
+        g_deviceSecLevelHandle = NULL;
     }
-    if (g_callback != NULL) {
-        ClearList(g_callback);
+    if (g_callbackList != NULL) {
+        ClearList(g_callbackList);
     }
     return;
 }
 
 static int32_t DlopenSDK(void)
 {
-    g_deviceSecLevelHanle = dlopen("libdslm_sdk.z.so", RTLD_LAZY | RTLD_NODELETE);
-    if (g_deviceSecLevelHanle == NULL) {
+    g_deviceSecLevelHandle = dlopen("libdslm_sdk.z.so", RTLD_LAZY | RTLD_NODELETE);
+    if (g_deviceSecLevelHandle == NULL) {
         DATA_SEC_LOG_ERROR("failed to load libdevicesecmgrsdktmp: %s", dlerror());
         return DEVSL_ERROR;
     }
 
-    return SUCCESS;
+    return DEVSL_SUCCESS;
 }
 
 static int32_t InitDeviceSecEnv(void)
 {
-    if (g_deviceSecLevelHanle != NULL) {
+    if (g_deviceSecLevelHandle != NULL) {
         DATA_SEC_LOG_WARN("libdevicesecmgrsdk already loaded");
-        return SUCCESS;
+        return DEVSL_SUCCESS;
     }
     int32_t ret = DlopenSDK();
-    if (ret != SUCCESS) {
+    if (ret != DEVSL_SUCCESS) {
         return ret;
     }
     RequestDeviceSecurityInfoFunction requestDeviceSecurityInfo = (RequestDeviceSecurityInfoFunction)dlsym(
-        g_deviceSecLevelHanle, "RequestDeviceSecurityInfo");
+        g_deviceSecLevelHandle, "RequestDeviceSecurityInfo");
     if (requestDeviceSecurityInfo == NULL) {
-        dlclose(g_deviceSecLevelHanle);
-        g_deviceSecLevelHanle = NULL;
+        dlclose(g_deviceSecLevelHandle);
+        g_deviceSecLevelHandle = NULL;
         DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
-    FreeDeviceSecurityInfoFunction freeDeviceSecurityInfo = (FreeDeviceSecurityInfoFunction)dlsym(g_deviceSecLevelHanle,
+    FreeDeviceSecurityInfoFunction freeDeviceSecurityInfo = (FreeDeviceSecurityInfoFunction)dlsym(g_deviceSecLevelHandle,
         "FreeDeviceSecurityInfo");
     if (freeDeviceSecurityInfo == NULL) {
-        dlclose(g_deviceSecLevelHanle);
-        g_deviceSecLevelHanle = NULL;
+        dlclose(g_deviceSecLevelHandle);
+        g_deviceSecLevelHandle = NULL;
         DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
     GetDeviceSecurityLevelValueFunction getDeviceSecurityLevelValue = (GetDeviceSecurityLevelValueFunction)dlsym(
-        g_deviceSecLevelHanle, "GetDeviceSecurityLevelValue");
+        g_deviceSecLevelHandle, "GetDeviceSecurityLevelValue");
     if (getDeviceSecurityLevelValue == NULL) {
-        dlclose(g_deviceSecLevelHanle);
-        g_deviceSecLevelHanle = NULL;
+        dlclose(g_deviceSecLevelHandle);
+        g_deviceSecLevelHandle = NULL;
         DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
     RequestDeviceSecurityInfoAsyncFunction requestDeviceSecurityInfoAsync =
-        (RequestDeviceSecurityInfoAsyncFunction)dlsym(g_deviceSecLevelHanle, "RequestDeviceSecurityInfoAsync");
+        (RequestDeviceSecurityInfoAsyncFunction)dlsym(g_deviceSecLevelHandle, "RequestDeviceSecurityInfoAsync");
     if (requestDeviceSecurityInfoAsync == NULL) {
-        dlclose(g_deviceSecLevelHanle);
-        g_deviceSecLevelHanle = NULL;
+        dlclose(g_deviceSecLevelHandle);
+        g_deviceSecLevelHandle = NULL;
         DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
@@ -95,31 +97,30 @@ static int32_t InitDeviceSecEnv(void)
     g_deviceSecEnv.freeDeviceSecurityInfo = freeDeviceSecurityInfo;
     g_deviceSecEnv.getDeviceSecurityLevelValue = getDeviceSecurityLevelValue;
     g_deviceSecEnv.requestDeviceSecurityInfoAsync = requestDeviceSecurityInfoAsync;
-    return SUCCESS;
+    return DEVSL_SUCCESS;
 }
 
 int32_t StartDevslEnv()
 {
     DATA_SEC_LOG_INFO("Enter InitDeviceSecEnv...");
     int32_t ret = InitDeviceSecEnv();
-    DATA_SEC_LOG_INFO("InitDeviceSecEnv done");
-    if (ret != SUCCESS) {
+    DATA_SEC_LOG_INFO("InitDeviceSecEnv done!");
+    if (ret != DEVSL_SUCCESS) {
         return DEVSL_ERR_DEVICE_SEC_SDK_INIT;
     }
 
-    if (g_callback == NULL) {
+    if (g_callbackList == NULL) {
         ret = InitPthreadMutex();
-        g_callback = InitList();
-    }
-    
-    if (ret != SUCCESS) {
-        return DEVSL_ERR_INIT_MUTEX_LOCK;
+        if (ret != DEVSL_SUCCESS) {
+            return DEVSL_ERR_MUTEX_LOCK_INIT;
+        }
+        g_callbackList = InitList();
     }
 
-    if (g_callback == NULL) {
-        return DEVSL_ERR_MALLOC_FAIL;
+    if (g_callbackList == NULL) {
+        return DEVSL_ERR_OUT_OF_MEMORY;
     }
-    return SUCCESS;
+    return DEVSL_SUCCESS;
 }
 
 void FinishDevslEnv(void)
@@ -131,7 +132,7 @@ void FinishDevslEnv(void)
 
 int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLevel)
 {
-    DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdid!");
+    DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdid...");
     if (g_deviceSecEnv.requestDeviceSecurityInfo == NULL) {
         DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid: requestDeviceSecurityInfo is invalid");
         return DEVSL_ERROR;
@@ -153,9 +154,10 @@ int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLev
     struct DeviceIdentify devId;
     (void)memset_s(&devId, sizeof(devId), 0, sizeof(devId));
 
-    if (memcpy_s(devId.identity, DEVICE_ID_MAX_LEN, udid, udidLen) != EOK) {
+    ret = memcpy_s(devId.identity, udidLen, udid, udidLen);
+    if (ret != EOK) {
         DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid, udid memcpy failed");
-        return DEVSL_ERR_MEM_CPY;
+        return ret;
     }
     devId.length = udidLen;
 
@@ -175,25 +177,24 @@ int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLev
 
     g_deviceSecEnv.freeDeviceSecurityInfo(info);
     DATA_SEC_LOG_INFO("GetDeviceSecLevelByUdid done!");
-    return SUCCESS;
+    return DEVSL_SUCCESS;
 }
 
-// Async
 void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSecurityInfo *info)
 {
-    DATA_SEC_LOG_INFO("Enter OnApiDeviceSecInfoCallback!");
+    DATA_SEC_LOG_INFO("Enter OnApiDeviceSecInfoCallback...");
     if (identify == NULL) {
-        DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback: DeviceIdentify is null!");
+        DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback: DeviceIdentify is null");
         return;
     }
     int32_t ret = DEVSL_SUCCESS;
 
     if (info == NULL) {
-        DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback: DeviceSecurityInfo is null!");
+        DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback: DeviceSecurityInfo is null");
         ret = DEVSL_ERROR;
     }
     if (g_deviceSecEnv.getDeviceSecurityLevelValue == NULL) {
-        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: getDeviceSecValue is invalid");
+        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: getDeviceSecurityLevelValue is invalid");
         ret = DEVSL_ERROR;
     }
 
@@ -205,12 +206,12 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
     int32_t devLevel = DEFAULT_DEV_SEC_LEVEL;
     uint32_t levelInfo = DATA_SEC_LEVEL0;
 
-    if (ret != DEVSL_ERROR) {
+    if (ret == DEVSL_SUCCESS) {
         ret = g_deviceSecEnv.getDeviceSecurityLevelValue(info, &devLevel);
         if (ret != SUCCESS) {
-            DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback, get device security level value, %d", ret);
+            DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: get device security level value, %d", ret);
         } else {
-            levelInfo  = GetDataSecLevelByDevSecLevel(devLevel);
+            levelInfo = GetDataSecLevelByDevSecLevel(devLevel);
         }
         g_deviceSecEnv.freeDeviceSecurityInfo(info);
     }
@@ -218,21 +219,21 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
     DEVSLQueryParams queryParams;
     (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
 
-    if (memcpy_s(queryParams.udid, DEVICE_ID_MAX_LEN, identify->identity, identify->length) != EOK) {
-        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback, udid memcpy failed");
+    if (memcpy_s(queryParams.udid, identify->length, identify->identity, identify->length) != EOK) {
+        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: udid memcpy failed");
         return;
     }
     queryParams.udidLen = identify->length;
 
-    if (g_callback != NULL) {
-        LookupCallback(g_callback, &queryParams, ret, levelInfo);
+    if (g_callbackList != NULL) {
+        LookupCallback(g_callbackList, &queryParams, ret, levelInfo);
     }
-    DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback done, ret %d!", ret);
+    DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback done!");
 }
 
 int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen)
 {
-    DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdidAsync!");
+    DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdidAsync...");
     if (g_deviceSecEnv.requestDeviceSecurityInfoAsync == NULL) {
         DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync: requestDeviceSecurityInfoAsync is invalid");
         return DEVSL_ERROR;
@@ -242,24 +243,25 @@ int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen)
     DeviceIdentify devId;
     (void)memset_s(&devId, sizeof(devId), 0, sizeof(devId));
 
-    if (memcpy_s(devId.identity, DEVICE_ID_MAX_LEN, udid, udidLen) != EOK) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync, udid memcpy failed");
-        return DEVSL_ERR_MEM_CPY;
+    ret = memcpy_s(devId.identity, udidLen, udid, udidLen);
+    if (ret != EOK) {
+        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync: memcpy udid failed");
+        return ret;
     }
     devId.length = udidLen;
     ret = g_deviceSecEnv.requestDeviceSecurityInfoAsync(&devId, NULL, OnApiDeviceSecInfoCallback);
     if (ret != SUCCESS) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync, request device security Info for Async failed, %d", ret);
+        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync: request device security Info for Async failed, %d", ret);
         return ret;
     }
 
-    DATA_SEC_LOG_INFO("GetDeviceSecLevelByUdidAsync done, ret %d!", ret);
+    DATA_SEC_LOG_INFO("GetDeviceSecLevelByUdidAsync done!");
     return ret;
 }
 
 int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParamsR)
 {
-    DATA_SEC_LOG_INFO("DATASL: Enter CompareUdid!");
+    DATA_SEC_LOG_INFO("Enter CompareUdid...");
     uint32_t i;
 
     if (queryParamsL->udidLen != queryParamsR->udidLen) {
@@ -270,7 +272,8 @@ int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParam
             return DEVSL_ERROR;
         }
     }
-    return SUCCESS;
+    DATA_SEC_LOG_INFO("CompareUdid done!");
+    return DEVSL_SUCCESS;
 }
 
 int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel)
@@ -302,35 +305,34 @@ int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel)
 
 int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback)
 {
+    DATA_SEC_LOG_INFO("Enter UpdateCallbackListParams...");
     int32_t ret;
-    int32_t result = DEVSL_ERR_SERVICES_TOO_MANY;
+    int32_t result = DEVSL_ERR_REQUEST_DEVICE_EXCEED_LIMIT;
     int32_t levelInfo = DEFAULT_DEV_SEC_LEVEL;
 
     struct DATASLCallbackParams *newListNode =
         (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
     if (newListNode == NULL) {
-        return DEVSL_ERR_MALLOC_FAIL;
+        return DEVSL_ERR_OUT_OF_MEMORY;
     }
-    if (memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams->udid, queryParams->udidLen) != EOK) {
-        DATA_SEC_LOG_ERROR("UpdateCallbackListParams, udid memcpy failed");
+
+    ret = memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams->udid, queryParams->udidLen);
+    if (ret != EOK) {
+        DATA_SEC_LOG_ERROR("UpdateCallbackListParams: memcpy udid failed");
         free(newListNode);
-        return DEVSL_ERR_MEM_CPY;
+        return ret;
     }
     newListNode->queryParams.udidLen = queryParams->udidLen;
     newListNode->callback = callback;
 
-    ret = GetListLength(g_callback);
-    if (ret == MAX_LIST_SUM) {
-        g_callback->next->callbackParams->callback(queryParams, result, levelInfo);
-        PopList(g_callback, g_callback->next->callbackParams);
+    ret = GetListLength(g_callbackList);
+    if (ret == MAX_LIST_LENGTH) {
+        g_callbackList->next->callbackParams->callback(queryParams, result, levelInfo);
+        RemoveListNode(g_callbackList, g_callbackList->next->callbackParams);
     }
 
-    ret = FindList(g_callback, newListNode);
-    if (ret != SUCCESS) {
-        ret = PushList(g_callback, newListNode);
-        if (ret != SUCCESS) {
-            return ret;
-        }
-    }
-    return SUCCESS;
+    ret = PushListNode(g_callbackList, newListNode);
+    DATA_SEC_LOG_INFO("UpdateCallbackListParams done!");
+    return ret;
+    
 }

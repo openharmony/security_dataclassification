@@ -20,102 +20,97 @@
 extern "C" {
 #endif
 
-#define DEVSL_API __attribute__ ((visibility ("default")))
+#define DATASL_API __attribute__ ((visibility ("default")))
 
 static int32_t GetHigestSecLevelByUdid(DEVSLQueryParams *queryParams, uint32_t *dataLevel)
 {
-    int32_t ret = 0;
+    int32_t ret;
     int32_t devLevel = DEFAULT_DEV_SEC_LEVEL;
 
-    DATA_SEC_LOG_INFO("GetHighestSecLevelByUdid by udid!");
-    if ((queryParams->udidLen < 0u) || (queryParams->udidLen > 64u)) {
-        return ERR_INVALID_PARA;
+    if ((queryParams->udidLen <= 0u) || (queryParams->udidLen > 64u)) {
+        return DEVSL_ERR_BAD_PARAMETERS;
     }
 
     ret = GetDeviceSecLevelByUdid(queryParams->udid, queryParams->udidLen, &devLevel);
-    if (ret != SUCCESS) {
+    if (ret != DEVSL_SUCCESS) {
         *dataLevel = DATA_SEC_LEVEL0;
-        DATA_SEC_LOG_ERROR("GetHigestSecLevelByUdid, get device security level failed, error code: %d", ret);
+        DATA_SEC_LOG_ERROR("GetHigestSecLevelByUdid: get device security level failed, error code: %d", ret);
         return ret;
     }
 
-    *dataLevel  = GetDataSecLevelByDevSecLevel(devLevel);
+    *dataLevel = GetDataSecLevelByDevSecLevel(devLevel);
     return ret;
 }
 
-DEVSL_API int32_t DATASL_OnStart(void)
+DATASL_API int32_t DATASL_OnStart(void)
 {
     int32_t ret;
 
-    DATA_SEC_LOG_INFO("Enter DATASL_Onstart");
+    DATA_SEC_LOG_INFO("Enter DATASL_Onstart...");
     ret = StartDevslEnv();
-    if (ret != SUCCESS) {
-        DATA_SEC_LOG_ERROR("StartDevslEnv - failed, error code is %d", ret);
+    if (ret != DEVSL_SUCCESS) {
+        DATA_SEC_LOG_ERROR("DATASL_Onstart: StartDevslEnv - failed, error code is %d", ret);
         FinishDevslEnv();
         return DEVSL_ERROR;
     }
-    DATA_SEC_LOG_INFO("DATASL_Onstart - success");
-    return SUCCESS;
+    DATA_SEC_LOG_INFO("DATASL_Onstart done!");
+    return DEVSL_SUCCESS;
 }
 
-DEVSL_API void DATASL_OnStop(void)
+DATASL_API void DATASL_OnStop(void)
 {
-    DATA_SEC_LOG_INFO("Enter DATASL_OnStop");
+    DATA_SEC_LOG_INFO("Enter DATASL_OnStop...");
     FinishDevslEnv();
-    DATA_SEC_LOG_INFO("DATASL_OnStop done");
+    DATA_SEC_LOG_INFO("DATASL_OnStop done!");
     return;
 }
 
-DEVSL_API int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo)
+DATASL_API int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo)
 {
     int32_t ret = 0;
-    DATA_SEC_LOG_INFO("Enter DATASL_GetHighestSecLevel!");
+    DATA_SEC_LOG_INFO("Enter DATASL_GetHighestSecLevel...");
     if ((queryParams == NULL) || (levelInfo == NULL)) {
-        return ERR_INVALID_PARA;
+        return DEVSL_ERR_BAD_PARAMETERS;
     }
 
     ret = GetHigestSecLevelByUdid(queryParams, levelInfo);
 
-    DATA_SEC_LOG_INFO("DATASL_GetHighestSecLevel done, ret %d!", ret);
+    DATA_SEC_LOG_INFO("DATASL_GetHighestSecLevel done!");
     return ret;
 }
 
-// Async
 static int32_t GetHighestSecLevelByUdidAsync(DEVSLQueryParams *queryParams)
 {
-    DATA_SEC_LOG_INFO("Enter GetHighestSecLevelByUdidAsync!");
+    DATA_SEC_LOG_INFO("Enter GetHighestSecLevelByUdidAsync...");
     int32_t ret;
 
-    if ((queryParams->udidLen < 0u) || (queryParams->udidLen > 64u)) {
-        return ERR_INVALID_PARA;
-    }
-
     ret = GetDeviceSecLevelByUdidAsync(queryParams->udid, queryParams->udidLen);
-    if (ret != SUCCESS) {
-        DATA_SEC_LOG_ERROR("GetHigestSecLevelByUdid, get device security level failed, error code: %d", ret);
+    if (ret != DEVSL_SUCCESS) {
+        DATA_SEC_LOG_ERROR("GetHighestSecLevelByUdidAsync: get device security level failed, error code: %d", ret);
         return ret;
     }
     
-    DATA_SEC_LOG_INFO("GetHighestSecLevelByUdidAsync done, ret %d!", ret);
+    DATA_SEC_LOG_INFO("GetHighestSecLevelByUdidAsync done!");
     return ret;
 }
 
-DEVSL_API int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback)
+DATASL_API int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback)
 {
-    DATA_SEC_LOG_INFO("Enter DATASL_GetHighestSecLevelAsync!");
+    DATA_SEC_LOG_INFO("Enter DATASL_GetHighestSecLevelAsync...");
     int32_t ret;
 
-    if ((queryParams == NULL) || (callback == NULL)) {
-        return ERR_INVALID_PARA;
+    if ((queryParams == NULL) || (callback == NULL) || (queryParams->udidLen <= 0u) || (queryParams->udidLen > 64u)) {
+        return DEVSL_ERR_BAD_PARAMETERS;
     }
 
     ret = UpdateCallbackListParams(queryParams, callback);
-    if (ret != SUCCESS) {
+    if (ret != DEVSL_SUCCESS) {
+        DATA_SEC_LOG_ERROR("DATASL_GetHighestSecLevelAsync: Update Callback list params failed, error code: %d", ret);
         return ret;
     }
 
     ret = GetHighestSecLevelByUdidAsync(queryParams);
-    DATA_SEC_LOG_INFO("DATASL_GetHighestSecLevelAsync done, ret %d!", ret);
+    DATA_SEC_LOG_INFO("DATASL_GetHighestSecLevelAsync done!");
     return ret;
 }
 

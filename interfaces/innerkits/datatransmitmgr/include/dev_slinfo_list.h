@@ -32,15 +32,15 @@ struct DATASLListParams {
 
 struct DATASLListParams* InitList(void);
 
-int32_t PushList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
-void PopList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+void RemoveListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
 void ClearList(struct DATASLListParams *list);
 
 int GetListLength(struct DATASLListParams *list);
 
-int32_t FindList(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+int32_t FindListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
 int32_t InitPthreadMutex(void);
 

@@ -22,7 +22,6 @@
 extern "C" {
 #endif
 
-#define MAX_LIST_SUM 128
 #define MAX_UDID_LENGTH 64
 
 #define DATA_SEC_LEVEL0 0 /* s0 */
@@ -39,14 +38,11 @@ typedef struct {
 enum {
     DEVSL_SUCCESS = 0,
     DEVSL_ERROR = 100,
-    DEVSL_ERR_GET_DEV_SEC_NOT_ONLINE = 101,
-    DEVSL_ERR_SERVICES_TOO_MANY = 102,
-    DEVSL_ERR_REPEATED_SERVICES = 103,
-    DEVSL_ERR_MEM_CPY = 104,
-    DEVSL_ERR_DEVICE_SEC_SDK_INIT = 105,
-    DEVSL_ERR_MALLOC_FAIL = 106,
-    DEVSL_MUTEX_UNLOCK = 107,
-    DEVSL_ERR_INIT_MUTEX_LOCK = 108,
+    DEVSL_ERR_REQUEST_DEVICE_EXCEED_LIMIT = 101,
+    DEVSL_ERR_DEVICE_SEC_SDK_INIT = 102,
+    DEVSL_ERR_OUT_OF_MEMORY = 103,
+    DEVSL_ERR_MUTEX_LOCK_INIT = 104,
+    DEVSL_ERR_BAD_PARAMETERS = 105,
 };
 
 int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo);
@@ -55,7 +51,6 @@ int32_t DATASL_OnStart(void);
 
 void DATASL_OnStop(void);
 
-// Async
 typedef void HigestSecInfoCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo);
 
 int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback);
