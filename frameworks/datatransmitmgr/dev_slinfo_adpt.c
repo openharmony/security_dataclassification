@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,6 +35,7 @@ static void DestroyDeviceSecEnv(void)
     }
     if (g_callbackList != NULL) {
         ClearList(g_callbackList);
+        g_callbackList = NULL;
     }
     return;
 }
@@ -68,8 +69,8 @@ static int32_t InitDeviceSecEnv(void)
         DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
-    FreeDeviceSecurityInfoFunction freeDeviceSecurityInfo = (FreeDeviceSecurityInfoFunction)dlsym(g_deviceSecLevelHandle,
-        "FreeDeviceSecurityInfo");
+    FreeDeviceSecurityInfoFunction freeDeviceSecurityInfo = (FreeDeviceSecurityInfoFunction)dlsym(
+        g_deviceSecLevelHandle, "FreeDeviceSecurityInfo");
     if (freeDeviceSecurityInfo == NULL) {
         dlclose(g_deviceSecLevelHandle);
         g_deviceSecLevelHandle = NULL;
@@ -154,10 +155,10 @@ int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLev
     struct DeviceIdentify devId;
     (void)memset_s(&devId, sizeof(devId), 0, sizeof(devId));
 
-    ret = memcpy_s(devId.identity, udidLen, udid, udidLen);
+    ret = memcpy_s(devId.identity, MAX_UDID_LENGTH, udid, udidLen);
     if (ret != EOK) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid, udid memcpy failed");
-        return ret;
+        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid: udid memcpy failed, ret is %d", ret);
+        return DEVSL_ERR_OUT_OF_MEMORY;
     }
     devId.length = udidLen;
 
@@ -170,7 +171,7 @@ int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLev
 
     ret = g_deviceSecEnv.getDeviceSecurityLevelValue(info, devLevel);
     if (ret != SUCCESS) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid, get device Security value failed, %d", ret);
+        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid: get device Security value failed, %d", ret);
         g_deviceSecEnv.freeDeviceSecurityInfo(info);
         return ret;
     }
@@ -219,7 +220,7 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
     DEVSLQueryParams queryParams;
     (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
 
-    if (memcpy_s(queryParams.udid, identify->length, identify->identity, identify->length) != EOK) {
+    if (memcpy_s(queryParams.udid, MAX_UDID_LENGTH, identify->identity, identify->length) != EOK) {
         DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: udid memcpy failed");
         return;
     }
@@ -243,10 +244,10 @@ int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen)
     DeviceIdentify devId;
     (void)memset_s(&devId, sizeof(devId), 0, sizeof(devId));
 
-    ret = memcpy_s(devId.identity, udidLen, udid, udidLen);
+    ret = memcpy_s(devId.identity, MAX_UDID_LENGTH, udid, udidLen);
     if (ret != EOK) {
-        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync: memcpy udid failed");
-        return ret;
+        DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync: memcpy udid failed, ret is %d", ret);
+        return DEVSL_ERR_OUT_OF_MEMORY;
     }
     devId.length = udidLen;
     ret = g_deviceSecEnv.requestDeviceSecurityInfoAsync(&devId, NULL, OnApiDeviceSecInfoCallback);
@@ -318,9 +319,9 @@ int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCal
 
     ret = memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams->udid, queryParams->udidLen);
     if (ret != EOK) {
-        DATA_SEC_LOG_ERROR("UpdateCallbackListParams: memcpy udid failed");
+        DATA_SEC_LOG_ERROR("UpdateCallbackListParams: memcpy udid failed, ret is %d", ret);
         free(newListNode);
-        return ret;
+        return DEVSL_ERR_OUT_OF_MEMORY;
     }
     newListNode->queryParams.udidLen = queryParams->udidLen;
     newListNode->callback = callback;
@@ -334,5 +335,4 @@ int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCal
     ret = PushListNode(g_callbackList, newListNode);
     DATA_SEC_LOG_INFO("UpdateCallbackListParams done!");
     return ret;
-    
 }
