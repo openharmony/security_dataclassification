@@ -1,6 +1,5 @@
-
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,7 +31,6 @@ protected:
     static void TearDownTestCase();
     void SetUp() override;
     void TearDown() override;
-
 private:
 };
 
@@ -55,7 +53,7 @@ static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
     int32_t ret;
 
     ret = DATASL_OnStart();
-    EXPECT_EQ(SUCCESS, ret);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
@@ -65,22 +63,22 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
 
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevel(nullptr, &levelInfo);
-    EXPECT_EQ(ERR_INVALID_PARA, ret);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
 {
     int32_t ret;
-    
+
     DEVSLQueryParams queryParams;
     (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
     DATASL_GetUdidByOpp(&queryParams);
 
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevel(&queryParams, nullptr);
-    EXPECT_EQ(ERR_INVALID_PARA, ret);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 }
- 
+
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
 {
     int32_t ret;
@@ -96,10 +94,9 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
     EXPECT_EQ(ERR_NOEXIST_DEVICE, ret);
 }
 
-// Aysnc
 static void tmpCallback000(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
-    EXPECT_EQ(ERR_INVALID_PARA, result);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, result);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
@@ -108,7 +105,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
 
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevelAsync(nullptr, &tmpCallback000);
-    EXPECT_EQ(ERR_INVALID_PARA, ret);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
@@ -119,7 +116,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
     DATASL_GetUdidByOpp(&queryParams);
 
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, nullptr);
-    EXPECT_EQ(ERR_INVALID_PARA, ret);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 }
 
 static void tmpCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
@@ -127,6 +124,7 @@ static void tmpCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t 
     EXPECT_EQ(ERR_NOEXIST_DEVICE, result);
     EXPECT_EQ(DATA_SEC_LEVEL0, static_cast<int32_t>(levelInfo));
 }
+
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
 {
     int32_t ret;
