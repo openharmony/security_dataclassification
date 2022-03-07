@@ -12,7 +12,9 @@
     "component": {
         "name": "dataclassification",
         "subsystem": "security",
-        "syscap": [],
+        "syscap": [
+            "SystemCapability.Security.DataTransitManager"
+        ],
         "features": [
             "dataclassification_datatransmitmgr"
         ],
