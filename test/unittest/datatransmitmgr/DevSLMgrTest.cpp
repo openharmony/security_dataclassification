@@ -54,6 +54,7 @@ static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
 
     ret = DATASL_OnStart();
     EXPECT_EQ(DEVSL_SUCCESS, ret);
+    DATASL_OnStop();
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
@@ -64,6 +65,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevel(nullptr, &levelInfo);
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
+    DATASL_OnStop();
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
@@ -77,6 +79,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevel(&queryParams, nullptr);
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
+    DATASL_OnStop();
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
@@ -92,6 +95,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
     ret = DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
     EXPECT_EQ(DATA_SEC_LEVEL0, static_cast<int32_t>(levelInfo));
     EXPECT_EQ(ERR_NOEXIST_DEVICE, ret);
+    DATASL_OnStop();
 }
 
 static void tmpCallback000(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
@@ -106,6 +110,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
     ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevelAsync(nullptr, &tmpCallback000);
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
+    DATASL_OnStop();
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
@@ -115,8 +120,10 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
     (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
     DATASL_GetUdidByOpp(&queryParams);
 
+    ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, nullptr);
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
+    DATASL_OnStop();
 }
 
 static void tmpCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
@@ -132,6 +139,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
     (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
     DATASL_GetUdidByOpp(&queryParams);
 
+    ret = DATASL_OnStart();
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, &tmpCallback);
     EXPECT_EQ(ERR_NOEXIST_DEVICE, ret);
     DATASL_OnStop();
