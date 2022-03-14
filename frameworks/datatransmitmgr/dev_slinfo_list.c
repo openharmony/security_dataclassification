@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,12 +35,13 @@ struct DATASLListParams* InitList(void)
     return list;
 }
 
-static void UpdateListNode(struct DATASLListParams *new, struct DATASLListParams *prev, struct DATASLListParams *next)
+static void UpdateListNode(struct DATASLListParams *newListNode,
+    struct DATASLListParams *prevListNode, struct DATASLListParams *nextListNode)
 {
-    next->prev = new;
-    new->next = next;
-    new->prev = prev;
-    prev->next = new;
+    nextListNode->prev = newListNode;
+    newListNode->next = nextListNode;
+    newListNode->prev = prevListNode;
+    prevListNode->next = newListNode;
 }
 
 int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
@@ -53,7 +54,7 @@ int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams 
     }
 
     UpdateListNode(newList, list->prev, list);
-    newList->callbackParams = (struct DATASLCallbackParams*)callbackParams;
+    newList->callbackParams = callbackParams;
     pthread_mutex_unlock(&gMutex);
     return DEVSL_SUCCESS;
 }

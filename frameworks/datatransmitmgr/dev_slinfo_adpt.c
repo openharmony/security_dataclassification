@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -131,7 +131,7 @@ void FinishDevslEnv(void)
     return;
 }
 
-int32_t GetDeviceSecLevelByUdid(uint8_t *udid, uint32_t udidLen, int32_t *devLevel)
+int32_t GetDeviceSecLevelByUdid(const uint8_t *udid, uint32_t udidLen, int32_t *devLevel)
 {
     DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdid...");
     if (g_deviceSecEnv.requestDeviceSecurityInfo == NULL) {
@@ -232,7 +232,7 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
     DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback done!");
 }
 
-int32_t GetDeviceSecLevelByUdidAsync(uint8_t *udid, uint32_t udidLen)
+int32_t GetDeviceSecLevelByUdidAsync(const uint8_t *udid, uint32_t udidLen)
 {
     DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdidAsync...");
     if (g_deviceSecEnv.requestDeviceSecurityInfoAsync == NULL) {
@@ -299,7 +299,7 @@ int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel)
         }
     }
     if (i >= n) {
-        DATA_SEC_LOG_WARN("GetDataSecLevelBySecLevel, unknow device level tag: %d", devLevel);
+        DATA_SEC_LOG_WARN("GetDataSecLevelBySecLevel, unknown device level tag: %d", devLevel);
     }
     return DATA_SEC_LEVEL0;
 }
