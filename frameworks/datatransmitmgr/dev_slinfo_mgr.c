@@ -23,7 +23,7 @@ extern "C" {
 
 #define DATASL_API __attribute__ ((visibility ("default")))
 
-static int32_t GetHigestSecLevelByUdid(DEVSLQueryParams *queryParams, uint32_t *dataLevel)
+static int32_t GetHighestSecLevelByUdid(DEVSLQueryParams *queryParams, uint32_t *dataLevel)
 {
     int32_t ret;
     int32_t devLevel = DEFAULT_DEV_SEC_LEVEL;
@@ -35,7 +35,7 @@ static int32_t GetHigestSecLevelByUdid(DEVSLQueryParams *queryParams, uint32_t *
     ret = GetDeviceSecLevelByUdid(queryParams->udid, queryParams->udidLen, &devLevel);
     if (ret != DEVSL_SUCCESS) {
         *dataLevel = DATA_SEC_LEVEL0;
-        DATA_SEC_LOG_ERROR("GetHigestSecLevelByUdid: get device security level failed, error code: %d", ret);
+        DATA_SEC_LOG_ERROR("GetHighestSecLevelByUdid: get device security level failed, error code: %d", ret);
         return ret;
     }
 
@@ -68,13 +68,13 @@ DATASL_API void DATASL_OnStop(void)
 
 DATASL_API int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo)
 {
-    int32_t ret = 0;
+    int32_t ret;
     DATA_SEC_LOG_INFO("Enter DATASL_GetHighestSecLevel...");
     if ((queryParams == NULL) || (levelInfo == NULL)) {
         return DEVSL_ERR_BAD_PARAMETERS;
     }
 
-    ret = GetHigestSecLevelByUdid(queryParams, levelInfo);
+    ret = GetHighestSecLevelByUdid(queryParams, levelInfo);
 
     DATA_SEC_LOG_INFO("DATASL_GetHighestSecLevel done!");
     return ret;
