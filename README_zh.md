@@ -47,16 +47,14 @@
 
 ## 接口说明<a name="section1312121216216"></a>
 
-设备认证组件中，设备群组管理服务负责将不同业务建立的设备间可信关系抽象成一个个可信群组，对外提供统一的接口，包含群组创建、删除、查询等功能；设备群组认证服务基于已经建立过可信关系的设备群组，提供设备可信认证与端到端会话密钥协商功能。
-
 **表 2**  数据传输管控提供的API接口功能介绍
 
 | 接口名                                                       | 描述                                   |
 | ------------------------------------------------------------ | -------------------------------------- |
 | int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo); | 获取对应设备可支持的数据风险等级。     |
 | int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback); | 异步获取对应设备可支持的数据风险等级。 |
-| int32_t DATASL_OnStart(void);                                | 模块初始化                             |
-| void DATASL_OnStop(void);                                    | 模块去初始化                           |
+| int32_t DATASL_OnStart(void);                                | 模块初始化。                           |
+| void DATASL_OnStop(void);                                    | 模块去初始化。                         |
 
 
 
