@@ -277,13 +277,13 @@ int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParam
     return DEVSL_SUCCESS;
 }
 
-int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel)
+uint32_t GetDataSecLevelByDevSecLevel(int32_t devLevel)
 {
     int32_t i;
     int32_t n;
     struct {
         int32_t devSecLevel;
-        int32_t dataSecLevel;
+        uint32_t dataSecLevel;
     } devTypeMap[] = {
         { DEV_SEC_LEVEL1, DATA_SEC_LEVEL1 },
         { DEV_SEC_LEVEL2, DATA_SEC_LEVEL2 },
@@ -309,7 +309,7 @@ int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCal
     DATA_SEC_LOG_INFO("Enter UpdateCallbackListParams...");
     int32_t ret;
     int32_t result = DEVSL_ERR_REQUEST_DEVICE_EXCEED_LIMIT;
-    int32_t levelInfo = DEFAULT_DEV_SEC_LEVEL;
+    uint32_t levelInfo = DEFAULT_DEV_SEC_LEVEL;
 
     struct DATASLCallbackParams *newListNode =
         (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
