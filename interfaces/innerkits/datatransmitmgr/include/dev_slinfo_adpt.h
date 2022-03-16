@@ -60,7 +60,7 @@ int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParam
 
 int32_t GetDeviceSecLevelByUdidAsync(const uint8_t *udid, uint32_t udidLen);
 
-int32_t GetDataSecLevelByDevSecLevel(int32_t devLevel);
+uint32_t GetDataSecLevelByDevSecLevel(int32_t devLevel);
 
 int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback);
 
