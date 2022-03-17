@@ -1,143 +1,67 @@
-# 数据分级保护
+# 数据传输管控<a name="ZH-CN_TOPIC_0000001150002727"></a>
 
-- [数据分级保护](#数据分级保护)
-  - [简介](#简介)
-  - [系统架构](#系统架构)
-  - [目录](#目录)
-  - [约束](#约束)
-  - [说明](#说明)
-    - [接口说明](#接口说明)
-    - [使用说明](#使用说明)
-  - [相关仓](#相关仓)
+-   [简介](#section11660541593)
+-   [目录](#section161941989596)
+-   [接口说明](#section1312121216216)
+-   [相关仓](#section1371113476307)
 
-## 简介
+## 简介<a name="section11660541593"></a>
 
-在OpenHarmony中，数据分级保护模块负责提供数据分级的保护策略。数据分级保护模块提供了数据分级相关的接口定义。
+在OpenHarmony中，数据传输管控模块负责为分布式服务提供跨设备传输时的管控策略。数据传输管控模块提供了数据传输管控相关的接口定义。
 
-数据分级保护模块当前提供如下接口定义：
+数据传输管控模块当前提供如下接口定义：
 
-- 基于设备安全等级的数据跨设备访问控制接口：提供基于设备安全等级的数据跨设备访问控制的接口，分布式跨设备数据传输业务可使用该接口获得对端设备可支持的数据风险等级。
+-   数据传输管控接口：为分布式服务提供数据跨设备传输时的管控策略，获取允许发送到对端设备的数据的最高风险等级。
 
-## 系统架构
+为实现上述接口定义，数据传输管控模块当前包含数据传输管控接口，其部署逻辑如下图：
 
+![](figures/dataclassification_zh.png)
 
+-   分布式服务：提供分布式数据管理能力的分布式服务，包含分布式文件系统、分布式数据管理等。
 
-## 目录
+-   数据传输管控模块：为分布式服务提供数据跨设备传输时的管控策略，获取允许发送到对端设备的数据的最高风险等级。
 
+-   设备安全等级管理模块：为数据传输管控提供设备安全等级信息。
 
+系统中涉及提供数据访问能力分布式服务，在发起数据传输前，需要确认对端设备的安全等级是否能满足当前数据风险等级的要求，即满足下表所示的管控要求：
 
-```
-base/security/dataclassification
-├── frameworks                        
-│   └── datatransmitmgr             # 代码实现
-├── interfaces                        # 接口API代码
-│   └── innerkits
-│       └── datatransmitmgr
-└── text                              #测试代码
-    └── unittest
-        └── datatransmitmgr
-```
+**表 1**  各安全等级的设备可支持的数据风险等级映射表
+
+| **设备安全等级** | **SL5**   | **SL4**   | **SL3**   | **SL2**   | **SL1**   |
+| ---------------- | --------- | --------- | --------- | --------- | --------- |
+| **数据风险等级** | **S0~S4** | **S0~S4** | **S0~S3** | **S0~S2** | **S0~S1** |
+
+分布式服务根据数据传输管控返回的数据风险等级实施默认拦截。在数据传输被拦截时，用户可授权放通（如，弹框并经用户确认后即可放通数据传输），设备厂商可自行实现该放通授权机制。
 
 
-
-## 约束
-
-- 开发语言：C
-
-## 说明
-
-### 接口说明
-
-数据分级保护提供的API接口功能介绍
-
-| 接口名                                                       | 描述                                                   |
-| ------------------------------------------------------------ | :----------------------------------------------------- |
-| int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo); | 请求获取对应设备允许传输的最高数据安全等级（同步接口） |
-| int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback); | 请求获取对应设备允许传输的最高数据安全等级（异步接口） |
-| int32_t DATASL_OnStart(void);                                | 初始化模块                                             |
-| void DATASL_OnStop(void);                                    | 模块退出                                               |
-
-### 使用说明
-
-所有接口均为native C内部接口
-
-#### 依赖添加
-
-1、编译依赖添加
+## 目录<a name="section161941989596"></a>
 
 ```
-external_deps += [ "dataclassification:data_transit_mgr" ]
+/base/security/dataclassification
+├── frameworks                   # 框架层
+│   └── datatransmitmgr          # 基础功能代码存放目录
+└── interfaces                   # 接口层
+    └── innerkits                # 内部接口层
+        └── datatransmitmgr      # 内部接口代码存放目录
 ```
 
-2、头文件添加
+## 接口说明<a name="section1312121216216"></a>
 
-```
-#include "dev_slinfo_mgr.h"
-```
+**表 2**  数据传输管控提供的API接口功能介绍
 
-接口使用示例
-
-1、同步接口使用示例如下：
-
-```c++
-void CheckDestHighestSecurityLevel(DEVSLQueryParams *queryParams)
-{
-    // 数据风险等级
-    uint32_t levelInfo = 0;
-    
-    //初始化模块
-    int32_t ret = DATASL_OnStart();
-    if (ret != DEVSL_SUCCESS) {
-        // 初始化模块失败。此场景建议开发者根据实际情况进行重试
-        return;
-    }
-    
-    // 调用同步接口获取设备允许的最高数据风险等级
-    int32_t ret = DATASL_GetHighestSecLevel(queryParams, &levelInfo);
-    if (ret != DEVSL_SUCCESS) {
-        // 获取信息失败。此场景建议开发者根据实际情况进行重试
-        return;
-    }
-    
-    // 模块退出
-    DATASL_OnStop();    
-}
-```
-
-2、异步接口使用示例如下：
-
-```c++
-// 回调函数，callback返回错误码以及设备允许的最高数据风险等级
-void HigestSecInfoCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
-{
-    if (result != DEVSL_SUCCESS) {
-        // 异步获取信息失败。此场景建议开发者根据实际情况进行重试
-        return;
-    }
-}
-void CheckDestHighestSecurityLevel(DEVSLQueryParams *queryParams)
-{
-    //初始化模块，重复初始化不影响功能，建议避免重复操作
-    int32_t ret = DATASL_OnStart();
-    
-    //调用异步接口获取设备允许的最高数据风险等级
-    ret = DATASL_GetHighestSecLevelAsync(queryParams, HigestSecInfoCallback);
-    if (ret != DEVSL_SUCCESS) {
-        // 获取信息失败，此场景建议开发者根据实际情况进行重试
-        // 此场景下callback不会回调。
-        return;
-    }
-    // 调用成功，等待callback回调。
-    
-    //关闭模块，注意在多线程的情况下慎重使用，当前线程关闭之后会对其他线程造成影响
-    DATASL_OnStop();
-}
-```
+| 接口名                                                       | 描述                                   |
+| ------------------------------------------------------------ | -------------------------------------- |
+| int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo); | 获取对应设备可支持的数据风险等级。     |
+| int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback); | 异步获取对应设备可支持的数据风险等级。 |
+| int32_t DATASL_OnStart(void);                                | 模块初始化。                           |
+| void DATASL_OnStop(void);                                    | 模块去初始化。                         |
 
 
 
-## 相关仓
 
-安全子系统
+## 相关仓<a name="section1371113476307"></a>
+
+**安全子系统**
 
 base/security/dataclassification
+
