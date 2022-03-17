@@ -31,6 +31,7 @@ struct DATASLListParams* InitList(void)
     }
     list->next = list;
     list->prev = list;
+    list->callbackParams = NULL;
     pthread_mutex_unlock(&gMutex);
     return list;
 }
@@ -67,8 +68,12 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
         if (CompareUdid(&(pList->callbackParams->queryParams), &(callbackParams->queryParams)) == DEVSL_SUCCESS) {
             pList->prev->next = pList->next;
             pList->next->prev = pList->prev;
-            free(pList->callbackParams);
-            free(pList);
+            if (pList->callbackParams != NULL) {
+                free(pList->callbackParams);
+            }
+            if (pList != NULL) {
+                free(pList);
+            }
             break;
         }
         pList = pList->next;
@@ -79,14 +84,24 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
 void ClearList(struct DATASLListParams *list)
 {
     pthread_mutex_lock(&gMutex);
+    if (list == NULL) {
+        pthread_mutex_unlock(&gMutex);
+        return;
+    }
     struct DATASLListParams *pList = list->next;
     while (pList != NULL && pList != list) {
         struct DATASLListParams *delList = pList;
         pList = pList->next;
-        free(delList->callbackParams);
-        free(delList);
+        if (delList->callbackParams != NULL) {
+            free(delList->callbackParams);
+        }
+        if (delList != NULL) {
+            free(delList);
+        }
     }
-    free(list->callbackParams);
+    if (list->callbackParams != NULL) {
+        free(list->callbackParams);
+    }
     free(list);
     pthread_mutex_unlock(&gMutex);
 }
@@ -135,8 +150,12 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
             tmpCallbackParams.callback = tmpCallback->callbackParams->callback;
             tmpCallback->prev->next = tmpCallback->next;
             tmpCallback->next->prev = tmpCallback->prev;
-            free(tmpCallback->callbackParams);
-            free(tmpCallback);
+            if (tmpCallback->callbackParams != NULL) {
+                free(tmpCallback->callbackParams);
+            }
+            if (tmpCallback != NULL) {
+                free(tmpCallback);
+            }
             break;
         }
         tmpCallback = nextCallback;
