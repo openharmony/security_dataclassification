@@ -37,7 +37,7 @@ private:
 DevSLMgrTest::DevSLMgrTest() {}
 DevSLMgrTest::~DevSLMgrTest() {}
 void DevSLMgrTest::SetUpTestCase() {}
-void DevSLMgrTest::TearDownTestCase() {};
+void DevSLMgrTest::TearDownTestCase() {}
 void DevSLMgrTest::SetUp() {}
 void DevSLMgrTest::TearDown() {}
 
