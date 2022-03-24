@@ -101,7 +101,7 @@ static int32_t InitDeviceSecEnv(void)
     return DEVSL_SUCCESS;
 }
 
-int32_t StartDevslEnv()
+int32_t StartDevslEnv(void)
 {
     DATA_SEC_LOG_INFO("Enter InitDeviceSecEnv...");
     int32_t ret = InitDeviceSecEnv();
