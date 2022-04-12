@@ -3,11 +3,7 @@
 
 ## Introduction<a name="section11660541593"></a>
 
-In OpenHarmony, the data transfer management module provides cross-device data transfer management and control policies for distributed services. The data transfer management module defines a sef of APIs related to data transfer management and control.
-
-The data transfer management module provides APIs to:
-
--   Provide management and control policies for cross-device data transmission and obtain the highest risk level of data to be sent to the peer device.
+In OpenHarmony, the data transfer management module provides cross-device data transfer management and control policies for distributed services. The data transfer management module defines a sef of APIs to provide management and control policies for cross-device data transmission and obtain the highest risk level of data to be sent to the peer device.
 
 The figure below illustrates the deployment logic of the data transfer management module.
 
