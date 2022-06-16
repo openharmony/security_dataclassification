@@ -38,7 +38,7 @@ ohos_unittest("DevSLMgrTest") {
   ]
   external_deps = [
     "device_security_level:dslm_sdk",
-    "dsoftbus_standard:softbus_client",
+    "dsoftbus:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
   ]
 }
