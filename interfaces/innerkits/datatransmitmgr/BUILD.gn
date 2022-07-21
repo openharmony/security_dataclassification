@@ -34,9 +34,8 @@ ohos_shared_library("data_transit_mgr") {
     "//base/security/dataclassification/frameworks/datatransmitmgr/dev_slinfo_mgr.c",
   ]
 
-  deps = [ "//utils/native/base:utils" ]
-
   external_deps = [
+    "c_utils:utils",
     "device_security_level:dslm_sdk",
     "hiviewdfx_hilog_native:libhilog",
   ]
