@@ -20,7 +20,7 @@ config("datatransmitmgr_test_config") {
     "//base/security/dataclassification/test/unittest/datatransmitmgr",
     "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr/include",
     "//third_party/googletest/googletest/include",
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
   ]
   cflags = [ "-DHILOG_ENABLE" ]
 }
@@ -32,11 +32,9 @@ ohos_unittest("DevSLMgrTest") {
 
   sources = [ "DevSLMgrTest.cpp" ]
 
-  deps = [
-    "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr",
-    "//utils/native/base:utils",
-  ]
+  deps = [ "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
   external_deps = [
+    "c_utils:utils",
     "device_security_level:dslm_sdk",
     "dsoftbus:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
