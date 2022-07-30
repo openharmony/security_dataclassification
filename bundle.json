@@ -25,9 +25,8 @@
         "ram": "50KB",
         "deps": {
             "components": [
-                "utils_base",
-                "libhilog",
-                "dslm_sdk"
+                "device_security_level",
+                "hiviewdfx_hilog_native"
             ],
             "third_party": []
         },
