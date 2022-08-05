@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include "gtest/gtest.h"
+#include "file_ex.h"
 #include "dev_slinfo_mgr.h"
 #include "securec.h"
 #include "softbus_bus_center.h"
@@ -36,8 +37,14 @@ private:
 
 DevSLMgrTest::DevSLMgrTest() {}
 DevSLMgrTest::~DevSLMgrTest() {}
-void DevSLMgrTest::SetUpTestCase() {}
-void DevSLMgrTest::TearDownTestCase() {}
+void DevSLMgrTest::SetUpTestCase()
+{
+    OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "0");
+}
+void DevSLMgrTest::TearDownTestCase()
+{
+    OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "1");
+}
 void DevSLMgrTest::SetUp() {}
 void DevSLMgrTest::TearDown() {}
 
