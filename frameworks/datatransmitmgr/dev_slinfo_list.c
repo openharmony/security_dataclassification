@@ -47,7 +47,7 @@ static void UpdateListNode(struct DATASLListParams *newListNode,
 
 int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
 {
-    pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&gMutex);
     struct DATASLListParams *newList = (struct DATASLListParams*)malloc(sizeof(struct DATASLListParams));
     if (newList == NULL) {
         pthread_mutex_unlock(&gMutex);
@@ -78,7 +78,7 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
         }
         pList = pList->next;
     }
-    pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&gMutex);
 }
 
 void ClearList(struct DATASLListParams *list)
