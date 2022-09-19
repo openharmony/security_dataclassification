@@ -23,16 +23,16 @@ pthread_mutex_t gMutex;
 
 struct DATASLListParams* InitList(void)
 {
-    pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&gMutex);
     struct DATASLListParams *list = (struct DATASLListParams *)malloc(sizeof(struct DATASLListParams));
     if (list == NULL) {
-        pthread_mutex_unlock(&gMutex);
+        (void)pthread_mutex_unlock(&gMutex);
         return NULL;
     }
     list->next = list;
     list->prev = list;
     list->callbackParams = NULL;
-    pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&gMutex);
     return list;
 }
 
@@ -50,19 +50,19 @@ int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams 
     (void)pthread_mutex_lock(&gMutex);
     struct DATASLListParams *newList = (struct DATASLListParams*)malloc(sizeof(struct DATASLListParams));
     if (newList == NULL) {
-        pthread_mutex_unlock(&gMutex);
+        (void)pthread_mutex_unlock(&gMutex);
         return DEVSL_ERR_OUT_OF_MEMORY;
     }
 
     UpdateListNode(newList, list->prev, list);
     newList->callbackParams = callbackParams;
-    pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&gMutex);
     return DEVSL_SUCCESS;
 }
 
 void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams *callbackParams)
 {
-    pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&gMutex);
     struct DATASLListParams *pList = list->next;
     while (pList != NULL && pList != list) {
         if (CompareUdid(&(pList->callbackParams->queryParams), &(callbackParams->queryParams)) == DEVSL_SUCCESS) {
@@ -83,9 +83,9 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
 
 void ClearList(struct DATASLListParams *list)
 {
-    pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&gMutex);
     if (list == NULL) {
-        pthread_mutex_unlock(&gMutex);
+        (void)pthread_mutex_unlock(&gMutex);
         return;
     }
     struct DATASLListParams *pList = list->next;
@@ -103,34 +103,34 @@ void ClearList(struct DATASLListParams *list)
         free(list->callbackParams);
     }
     free(list);
-    pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&gMutex);
 }
 
 int32_t GetListLength(struct DATASLListParams *list)
 {
-    pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&gMutex);
     struct DATASLListParams *pList = list->next;
     int32_t listLength = 0;
     while (pList != NULL && pList != list) {
         listLength++;
         pList = pList->next;
     }
-    pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&gMutex);
     return listLength;
 }
 
 int32_t FindListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
 {
-    pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&gMutex);
     struct DATASLListParams *pList = list->next;
     while (pList != NULL && pList != list) {
         if (CompareUdid(&(pList->callbackParams->queryParams), &(callbackParams->queryParams)) == DEVSL_SUCCESS) {
-            pthread_mutex_unlock(&gMutex);
+            (void)pthread_mutex_unlock(&gMutex);
             return DEVSL_SUCCESS;
         }
         pList = pList->next;
     }
-    pthread_mutex_unlock(&gMutex);
+   (void) pthread_mutex_unlock(&gMutex);
     return DEVSL_ERROR;
 }
 
@@ -139,7 +139,7 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
     struct DATASLCallbackParams tmpCallbackParams;
     (void)memset_s(&tmpCallbackParams, sizeof(struct DATASLCallbackParams), 0, sizeof(struct DATASLCallbackParams));
     int32_t ret = DEVSL_ERROR;
-    pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&gMutex);
     struct DATASLListParams *tmpCallback = list->next;
     while (tmpCallback != NULL && tmpCallback != list) {
         struct DATASLListParams *nextCallback = tmpCallback->next;
@@ -160,7 +160,7 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
         }
         tmpCallback = nextCallback;
     }
-    pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&gMutex);
     if (ret == DEVSL_SUCCESS) {
         tmpCallbackParams.callback(&(tmpCallbackParams.queryParams), result, levelInfo);
     }
