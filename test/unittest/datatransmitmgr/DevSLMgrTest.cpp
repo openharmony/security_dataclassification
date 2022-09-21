@@ -70,6 +70,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
     uint32_t levelInfo = 0;
 
     ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
     ret = DATASL_GetHighestSecLevel(nullptr, &levelInfo);
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
     DATASL_OnStop();
@@ -84,6 +85,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
     DATASL_GetUdidByOpp(&queryParams);
 
     ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
     ret = DATASL_GetHighestSecLevel(&queryParams, nullptr);
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
     DATASL_OnStop();
@@ -99,6 +101,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
     DATASL_GetUdidByOpp(&queryParams);
 
     ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
     ret = DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
     EXPECT_EQ(DATA_SEC_LEVEL0, static_cast<int32_t>(levelInfo));
     EXPECT_EQ(ERR_NOEXIST_DEVICE, ret);
@@ -115,6 +118,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
     int32_t ret;
 
     ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
     ret = DATASL_GetHighestSecLevelAsync(nullptr, &tmpCallback000);
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
     DATASL_OnStop();
@@ -128,6 +132,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
     DATASL_GetUdidByOpp(&queryParams);
 
     ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, nullptr);
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
     DATASL_OnStop();
@@ -147,6 +152,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
     DATASL_GetUdidByOpp(&queryParams);
 
     ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, &tmpCallback);
     EXPECT_EQ(ERR_NOEXIST_DEVICE, ret);
     DATASL_OnStop();
