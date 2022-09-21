@@ -40,8 +40,6 @@ void ClearList(struct DATASLListParams *list);
 
 int32_t GetListLength(struct DATASLListParams *list);
 
-int32_t FindListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
-
 int32_t InitPthreadMutex(void);
 
 void DestroyPthreadMutex(void);

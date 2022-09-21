@@ -119,21 +119,6 @@ int32_t GetListLength(struct DATASLListParams *list)
     return listLength;
 }
 
-int32_t FindListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
-{
-    (void)pthread_mutex_lock(&gMutex);
-    struct DATASLListParams *pList = list->next;
-    while (pList != NULL && pList != list) {
-        if (CompareUdid(&(pList->callbackParams->queryParams), &(callbackParams->queryParams)) == DEVSL_SUCCESS) {
-            (void)pthread_mutex_unlock(&gMutex);
-            return DEVSL_SUCCESS;
-        }
-        pList = pList->next;
-    }
-    (void)pthread_mutex_unlock(&gMutex);
-    return DEVSL_ERROR;
-}
-
 void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
     struct DATASLCallbackParams tmpCallbackParams;
