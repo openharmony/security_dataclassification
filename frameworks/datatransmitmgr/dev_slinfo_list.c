@@ -130,7 +130,7 @@ int32_t FindListNode(struct DATASLListParams *list, struct DATASLCallbackParams 
         }
         pList = pList->next;
     }
-   (void) pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&gMutex);
     return DEVSL_ERROR;
 }
 
