@@ -21,6 +21,9 @@
 #include "softbus_bus_center.h"
 #include "dev_slinfo_adpt.h"
 #include "DevSLMgrTest.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
+#include "accesstoken_kit.h"
 
 using namespace testing::ext;
 
@@ -35,11 +38,34 @@ protected:
 private:
 };
 
+void NativeTokenGet()
+{
+    uint64_t tokenId;
+    const char **perms = new const char *[1];
+    perms[0] = "ohos.permission.DISTRIBUTED_DATASYNC";
+    NativeTokenInfoParams infoInstance = {
+        .dcapsNum = 0,
+        .permsNum = 1,
+        .aclsNum = 0,
+        .dcaps = nullptr,
+        .perms = perms,
+        .acls = nullptr,
+        .aplStr = "system_basic",
+    };
+
+    infoInstance.processName = "DevSLMgrTest";
+    tokenId = GetAccessTokenId(&infoInstance);
+    SetSelfTokenID(tokenId);
+    OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
+    delete[] perms;
+}
+
 DevSLMgrTest::DevSLMgrTest() {}
 DevSLMgrTest::~DevSLMgrTest() {}
 void DevSLMgrTest::SetUpTestCase()
 {
     OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "0");
+    NativeTokenGet();
 }
 void DevSLMgrTest::TearDownTestCase()
 {
@@ -53,6 +79,18 @@ static void DATASL_GetUdidByOpp(DEVSLQueryParams *queryParams)
     char udid[65] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     (void)memcpy_s(queryParams->udid, MAX_UDID_LENGTH, udid, MAX_UDID_LENGTH);
     queryParams->udidLen = MAX_UDID_LENGTH;
+}
+
+static int32_t GetLocalUdid(DEVSLQueryParams *queryParams)
+{
+    const char *pkgName = "ohos.dslm";
+    NodeBasicInfo info;
+    int32_t ret = GetLocalNodeDeviceInfo(pkgName, &info);
+    if (GetNodeKeyInfo(pkgName, info.networkId, NODE_KEY_UDID, (uint8_t *)(queryParams->udid), UDID_BUF_LEN) != 0) {
+        return ret;
+    }
+    queryParams->udidLen = MAX_UDID_LENGTH;
+    return DEVSL_SUCCESS;
 }
 
 static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
@@ -108,6 +146,23 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
     DATASL_OnStop();
 }
 
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel004, TestSize.Level1)
+{
+    int32_t ret;
+    uint32_t levelInfo = 0;
+
+    DEVSLQueryParams queryParams;
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
+    ret = GetLocalUdid(&queryParams);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+
+    ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+    ret = DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+    DATASL_OnStop();
+}
+
 static void tmpCallback000(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, result);
@@ -155,5 +210,25 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
     EXPECT_EQ(DEVSL_SUCCESS, ret);
     ret = DATASL_GetHighestSecLevelAsync(&queryParams, &tmpCallback);
     EXPECT_EQ(ERR_NOEXIST_DEVICE, ret);
+    DATASL_OnStop();
+}
+
+static void tmpCallbackLocal(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
+{
+    EXPECT_EQ(DEVSL_SUCCESS, result);
+}
+
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync004, TestSize.Level1)
+{
+    int32_t ret;
+    DEVSLQueryParams queryParams;
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
+    ret = GetLocalUdid(&queryParams);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+
+    ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+    ret = DATASL_GetHighestSecLevelAsync(&queryParams, &tmpCallbackLocal);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
     DATASL_OnStop();
 }

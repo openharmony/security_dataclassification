@@ -11,27 +11,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//build/ohos.gni")
 import("//build/test.gni")
-module_output_path = "dataclassification/datasecuritylevel"
 
-config("datatransmitmgr_test_config") {
-  visibility = [ ":*" ]
-  include_dirs = [
-    "//base/security/dataclassification/test/unittest/datatransmitmgr",
-    "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr/include",
-    "//base/startup/init/interfaces/innerkits/include/syspara",
-    "//third_party/googletest/googletest/include",
-    "//commonlibrary/c_utils/base/include",
+ohos_fuzztest("DataTransmitMgrFuzzTest") {
+  module_out_path = "security/dataclassification"
+  fuzz_config_file = "//base/security/dataclassification/test/fuzztest/datatransmitmgr/datatransmitmgr_fuzzer"
+
+  cflags = [
+    "-g",
+    "-O0",
+    "-Wno-unused-variable",
+    "-fno-omit-frame-pointer",
   ]
-  cflags = [ "-DHILOG_ENABLE" ]
-}
 
-ohos_unittest("DevSLMgrTest") {
-  part_name = "dataclassification"
-  subsystem_name = "security"
-  module_out_path = module_output_path
+  include_dirs = [
+    "//base/security/dataclassification/test/fuzztest/datatransmitmgr/datatransmitmgr_fuzzer",
+    "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr/include",
+  ]
 
-  sources = [ "DevSLMgrTest.cpp" ]
+  sources = [ "datatransmitmgr_fuzzer.cpp" ]
 
   deps = [
     "//base/security/access_token/interfaces/innerkits/accesstoken:libaccesstoken_sdk",
@@ -39,9 +38,9 @@ ohos_unittest("DevSLMgrTest") {
     "//base/security/access_token/interfaces/innerkits/token_setproc:libtoken_setproc",
     "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr",
   ]
+
   external_deps = [
     "c_utils:utils",
-    "device_security_level:dslm_sdk",
     "dsoftbus:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
   ]
