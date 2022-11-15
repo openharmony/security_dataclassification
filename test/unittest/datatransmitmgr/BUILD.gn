@@ -45,4 +45,6 @@ ohos_unittest("DevSLMgrTest") {
     "dsoftbus:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
   ]
+  cflags_cc = [ "--coverage" ]
+  ldflags = [ "--coverage" ]
 }
