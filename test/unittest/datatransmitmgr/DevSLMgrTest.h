@@ -20,9 +20,11 @@ int TestOnstart(void);
 int TestGetHighestSecLevel001(void);
 int TestGetHighestSecLevel002(void);
 int TestGetHighestSecLevel003(void);
+int TestGetHighestSecLevel004(void);
 
 int TestGetHighestSecLevelAsync001(void);
 int TestGetHighestSecLevelAsync002(void);
 int TestGetHighestSecLevelAsync003(void);
+int TestGetHighestSecLevelAsync004(void);
 
 #endif
