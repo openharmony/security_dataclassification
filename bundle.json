@@ -46,7 +46,8 @@
                 }
             ],
             "test": [
-                "//base/security/dataclassification/test/unittest/datatransmitmgr:DevSLMgrTest"
+                "//base/security/dataclassification/test/unittest/datatransmitmgr:DevSLMgrTest",
+                "//base/security/dataclassification/test/fuzztest/datatransmitmgr/datatransmitmgr_fuzzer:DataTransmitMgrFuzzTest"
             ]
         }
     }
