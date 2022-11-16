@@ -40,5 +40,9 @@ ohos_shared_library("data_transit_mgr") {
     "hiviewdfx_hilog_native:libhilog",
   ]
 
-  cflags = [ "-Wall" ]
+  cflags = [
+    "-Wall",
+    "--coverage",
+  ]
+  ldflags = [ "--coverage" ]
 }
