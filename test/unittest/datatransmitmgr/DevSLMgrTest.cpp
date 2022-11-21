@@ -38,7 +38,7 @@ protected:
 private:
 };
 
-void NativeTokenGet()
+static void NativeTokenGet()
 {
     uint64_t tokenId;
     const char **perms = new const char *[1];
