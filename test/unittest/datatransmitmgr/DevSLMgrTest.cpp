@@ -40,6 +40,8 @@ protected:
 private:
 };
 
+static const int32_t DEV_SEC_LEVEL_ERR = 100;
+
 struct DeviceSecurityInfo {
     uint32_t magicNum {0};
     uint32_t result {0};
@@ -292,6 +294,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept001, TestSize.Level1)
     OnApiDeviceSecInfoCallback(&devId, &devInfo);
 
     DATASL_OnStop();
+    FinishDevslEnv();
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept002, TestSize.Level1)
@@ -332,6 +335,10 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept002, TestSize.Level1)
     EXPECT_EQ(DEVSL_ERROR, ret);
 
     ret = CompareUdid(&queryParamsLocal, &queryParamsLocal);
+
+    uint32_t result = GetDataSecLevelByDevSecLevel(DEV_SEC_LEVEL_ERR);
+    EXPECT_EQ(DATA_SEC_LEVEL0, result);
+
     EXPECT_EQ(DEVSL_SUCCESS, ret);
     DATASL_OnStop();
 }
@@ -345,8 +352,9 @@ static void ListCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
 {
-    ClearList(g_tmpList);
+    (void)InitPthreadMutex();
 
+    ClearList(g_tmpList);
     DEVSLQueryParams queryParamsOpp;
     (void)memset_s(&queryParamsOpp, sizeof(queryParamsOpp), 0, sizeof(queryParamsOpp));
     DATASL_GetUdidByOpp(&queryParamsOpp);
@@ -366,7 +374,6 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
         EXPECT_EQ(DEVSL_SUCCESS, DEVSL_ERROR);
     }
 
-
     struct DATASLCallbackParams *newListNode =
         (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
     if (newListNode == nullptr) {
@@ -380,4 +387,5 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
     RemoveListNode(g_tmpList, newListNode);
     ClearList(g_tmpList);
     g_tmpList = nullptr;
+    DestroyPthreadMutex();
 }
