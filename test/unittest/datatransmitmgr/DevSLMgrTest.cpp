@@ -294,7 +294,6 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept001, TestSize.Level1)
     OnApiDeviceSecInfoCallback(&devId, &devInfo);
 
     DATASL_OnStop();
-    FinishDevslEnv();
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept002, TestSize.Level1)
@@ -352,7 +351,8 @@ static void ListCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
 {
-    (void)InitPthreadMutex();
+    int32_t ret = InitPthreadMutex();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
 
     ClearList(g_tmpList);
     DEVSLQueryParams queryParamsOpp;
