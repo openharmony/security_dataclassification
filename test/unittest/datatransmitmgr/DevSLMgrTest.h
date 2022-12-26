@@ -29,5 +29,8 @@ int TestGetHighestSecLevelAsync004(void);
 
 int TestGetHighestSecLevelExcept001(void);
 int TestGetHighestSecLevelExcept002(void);
+int TestGetHighestSecLevelExcept003(void);
+int TestGetHighestSecLevelExcept004(void);
+int TestGetHighestSecLevelExcept005(void);
 
 #endif
