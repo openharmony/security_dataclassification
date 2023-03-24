@@ -376,11 +376,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
     OnApiDeviceSecInfoCallback(&devIdOpp, &devInfo);
 
     g_tmpList = InitList();
-    if (g_tmpList != nullptr) {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
-    } else {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_ERROR);
-    }
+    EXPECT_NE(g_tmpList, nullptr);
 
     struct DATASLCallbackParams *newListNode =
         (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
@@ -438,11 +434,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept004, TestSize.Level1)
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
 
     g_tmpList = InitList();
-    if (g_tmpList != nullptr) {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
-    } else {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_ERROR);
-    }
+    EXPECT_NE(g_tmpList, nullptr);
     for (int i = 0; i < LIST_LENGTH; i++) {
         AddList();
     }
@@ -460,20 +452,14 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level1)
     EXPECT_EQ(DEVSL_SUCCESS, ret);
 
     g_tmpList = InitList();
-    if (g_tmpList != nullptr) {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
-    } else {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_ERROR);
-    }
+    EXPECT_NE(g_tmpList, nullptr);
 
     DEVSLQueryParams queryParams;
     (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
     (void)GetLocalUdid(&queryParams);
     struct DATASLCallbackParams *newListNode =
         (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
-    if (newListNode == nullptr) {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
-    }
+    EXPECT_NE(newListNode, nullptr);
     (void)memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams.udid, queryParams.udidLen);
     newListNode->queryParams.udidLen = queryParams.udidLen;
     newListNode->callback = nullptr;
