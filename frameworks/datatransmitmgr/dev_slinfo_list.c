@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,20 +19,20 @@
 #include "dev_slinfo_adpt.h"
 #include "dev_slinfo_log.h"
 
-pthread_mutex_t gMutex;
+pthread_mutex_t g_Mutex;
 
 struct DATASLListParams* InitList(void)
 {
-    (void)pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&g_Mutex);
     struct DATASLListParams *list = (struct DATASLListParams *)malloc(sizeof(struct DATASLListParams));
     if (list == NULL) {
-        (void)pthread_mutex_unlock(&gMutex);
+        (void)pthread_mutex_unlock(&g_Mutex);
         return NULL;
     }
     list->next = list;
     list->prev = list;
     list->callbackParams = NULL;
-    (void)pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&g_Mutex);
     return list;
 }
 
@@ -47,22 +47,22 @@ static void UpdateListNode(struct DATASLListParams *newListNode,
 
 int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
 {
-    (void)pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&g_Mutex);
     struct DATASLListParams *newList = (struct DATASLListParams*)malloc(sizeof(struct DATASLListParams));
     if (newList == NULL) {
-        (void)pthread_mutex_unlock(&gMutex);
+        (void)pthread_mutex_unlock(&g_Mutex);
         return DEVSL_ERR_OUT_OF_MEMORY;
     }
 
     UpdateListNode(newList, list->prev, list);
     newList->callbackParams = callbackParams;
-    (void)pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&g_Mutex);
     return DEVSL_SUCCESS;
 }
 
 void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams *callbackParams)
 {
-    (void)pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&g_Mutex);
     struct DATASLListParams *pList = list->next;
     while (pList != NULL && pList != list) {
         if (CompareUdid(&(pList->callbackParams->queryParams), &(callbackParams->queryParams)) == DEVSL_SUCCESS) {
@@ -78,14 +78,14 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
         }
         pList = pList->next;
     }
-    (void)pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&g_Mutex);
 }
 
 void ClearList(struct DATASLListParams *list)
 {
-    (void)pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&g_Mutex);
     if (list == NULL) {
-        (void)pthread_mutex_unlock(&gMutex);
+        (void)pthread_mutex_unlock(&g_Mutex);
         return;
     }
     struct DATASLListParams *pList = list->next;
@@ -103,19 +103,19 @@ void ClearList(struct DATASLListParams *list)
         free(list->callbackParams);
     }
     free(list);
-    (void)pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&g_Mutex);
 }
 
 int32_t GetListLength(struct DATASLListParams *list)
 {
-    (void)pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&g_Mutex);
     struct DATASLListParams *pList = list->next;
     int32_t listLength = 0;
     while (pList != NULL && pList != list) {
         listLength++;
         pList = pList->next;
     }
-    (void)pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&g_Mutex);
     return listLength;
 }
 
@@ -124,7 +124,7 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
     struct DATASLCallbackParams tmpCallbackParams;
     (void)memset_s(&tmpCallbackParams, sizeof(struct DATASLCallbackParams), 0, sizeof(struct DATASLCallbackParams));
     int32_t ret = DEVSL_ERROR;
-    (void)pthread_mutex_lock(&gMutex);
+    (void)pthread_mutex_lock(&g_Mutex);
     struct DATASLListParams *tmpCallback = list->next;
     while (tmpCallback != NULL && tmpCallback != list) {
         struct DATASLListParams *nextCallback = tmpCallback->next;
@@ -145,7 +145,7 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
         }
         tmpCallback = nextCallback;
     }
-    (void)pthread_mutex_unlock(&gMutex);
+    (void)pthread_mutex_unlock(&g_Mutex);
     if (ret == DEVSL_SUCCESS) {
         tmpCallbackParams.callback(&(tmpCallbackParams.queryParams), result, levelInfo);
     }
@@ -154,11 +154,11 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
 int32_t InitPthreadMutex(void)
 {
     int32_t ret;
-    ret = pthread_mutex_init(&gMutex, NULL);
+    ret = pthread_mutex_init(&g_Mutex, NULL);
     return ret;
 }
 
 void DestroyPthreadMutex(void)
 {
-    pthread_mutex_destroy(&gMutex);
+    pthread_mutex_destroy(&g_Mutex);
 }
