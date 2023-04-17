@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -354,7 +354,7 @@ static struct DATASLListParams *g_tmpList = nullptr;
 
 static void ListCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
-    EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
+    EXPECT_EQ(result, DEVSL_SUCCESS);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
@@ -380,9 +380,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
 
     struct DATASLCallbackParams *newListNode =
         (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
-    if (newListNode == nullptr) {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
-    }
+    EXPECT_NE(newListNode, nullptr);
     (void)memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParamsOpp.udid, queryParamsOpp.udidLen);
     newListNode->queryParams.udidLen = queryParamsOpp.udidLen;
     newListNode->callback = &ListCallback;
@@ -407,9 +405,7 @@ static void AddList(void)
 
     struct DATASLCallbackParams *newListNode =
         (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
-    if (newListNode == nullptr) {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
-    }
+    EXPECT_NE(newListNode, nullptr);
     (void)memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams.udid, queryParams.udidLen);
     newListNode->queryParams.udidLen = queryParams.udidLen;
     newListNode->callback = &tmpCallbackExcept004;
