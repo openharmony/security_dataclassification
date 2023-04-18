@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -73,22 +73,22 @@ namespace OHOS {
     }
 }
 
-static void NativeTokenGet()
+static void NativeTokenGetFUZZ()
 {
     uint64_t tokenId;
     const char **perms = new const char *[1];
     perms[0] = "ohos.permission.DISTRIBUTED_DATASYNC";
     NativeTokenInfoParams infoInstance = {
+        .acls = nullptr,
+        .dcaps = nullptr,
+        .aclsNum = 0,
         .dcapsNum = 0,
         .permsNum = 1,
-        .aclsNum = 0,
-        .dcaps = nullptr,
         .perms = perms,
-        .acls = nullptr,
         .aplStr = "system_basic",
     };
 
-    infoInstance.processName = "DevSLMgrTest";
+    infoInstance.processName = "DataTransmitMgrFuzzTest";
     tokenId = GetAccessTokenId(&infoInstance);
     SetSelfTokenID(tokenId);
     OHOS::Security::AccessToken::AccessTokenKit::ReloadNativeTokenInfo();
@@ -99,7 +99,7 @@ static void NativeTokenGet()
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    NativeTokenGet();
+    NativeTokenGetFUZZ();
     OHOS::FuzzDoDataTransmitMgr(data, size);
     return 0;
 }

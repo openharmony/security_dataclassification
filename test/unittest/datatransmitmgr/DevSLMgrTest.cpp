@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,6 +41,7 @@ private:
 };
 
 static const int32_t DEV_SEC_LEVEL_ERR = 100;
+static const int32_t LIST_LENGTH = 128;
 
 struct DeviceSecurityInfo {
     uint32_t magicNum {0};
@@ -100,6 +101,13 @@ static void DATASL_GetUdidByExcept(DEVSLQueryParams *queryParams)
     char udid[65] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     (void)memcpy_s(queryParams->udid, MAX_UDID_LENGTH, udid, MAX_UDID_LENGTH);
     queryParams->udidLen = MAX_UDID_LENGTH + 1;
+}
+
+static void DATASL_GetUdidByExceptZero(DEVSLQueryParams *queryParams)
+{
+    char udid[65] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+    (void)memcpy_s(queryParams->udid, MAX_UDID_LENGTH, udid, MAX_UDID_LENGTH);
+    queryParams->udidLen = 0;
 }
 
 static int32_t GetLocalUdid(DEVSLQueryParams *queryParams)
@@ -346,7 +354,7 @@ static struct DATASLListParams *g_tmpList = nullptr;
 
 static void ListCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
-    EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
+    EXPECT_EQ(result, DEVSL_SUCCESS);
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
@@ -368,17 +376,11 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
     OnApiDeviceSecInfoCallback(&devIdOpp, &devInfo);
 
     g_tmpList = InitList();
-    if (g_tmpList != nullptr) {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
-    } else {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_ERROR);
-    }
+    EXPECT_NE(g_tmpList, nullptr);
 
     struct DATASLCallbackParams *newListNode =
         (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
-    if (newListNode == nullptr) {
-        EXPECT_EQ(DEVSL_SUCCESS, DEVSL_SUCCESS);
-    }
+    EXPECT_NE(newListNode, nullptr);
     (void)memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParamsOpp.udid, queryParamsOpp.udidLen);
     newListNode->queryParams.udidLen = queryParamsOpp.udidLen;
     newListNode->callback = &ListCallback;
@@ -388,4 +390,80 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
     ClearList(g_tmpList);
     g_tmpList = nullptr;
     DestroyPthreadMutex();
+}
+
+static void tmpCallbackExcept004(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
+{
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, result);
+}
+
+static void AddList(void)
+{
+    DEVSLQueryParams queryParams;
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
+    (void)GetLocalUdid(&queryParams);
+
+    struct DATASLCallbackParams *newListNode =
+        (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
+    EXPECT_NE(newListNode, nullptr);
+    (void)memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams.udid, queryParams.udidLen);
+    newListNode->queryParams.udidLen = queryParams.udidLen;
+    newListNode->callback = &tmpCallbackExcept004;
+
+    PushListNode(g_tmpList, newListNode);
+}
+
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept004, TestSize.Level1)
+{
+    int32_t ret;
+    ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+
+    DEVSLQueryParams queryParams;
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
+    DATASL_GetUdidByExceptZero(&queryParams);
+    uint32_t levelInfo = 0;
+    ret = DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
+
+    ret = DATASL_GetHighestSecLevelAsync(&queryParams, &tmpCallbackExcept004);
+    EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, ret);
+
+    g_tmpList = InitList();
+    EXPECT_NE(g_tmpList, nullptr);
+    for (int i = 0; i < LIST_LENGTH; i++) {
+        AddList();
+    }
+    (void)GetListLength(g_tmpList);
+
+    ClearList(g_tmpList);
+    g_tmpList = nullptr;
+    DATASL_OnStop();
+}
+
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level1)
+{
+    int32_t ret;
+    ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+
+    g_tmpList = InitList();
+    EXPECT_NE(g_tmpList, nullptr);
+
+    DEVSLQueryParams queryParams;
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
+    (void)GetLocalUdid(&queryParams);
+    struct DATASLCallbackParams *newListNode =
+        (struct DATASLCallbackParams*)malloc(sizeof(struct DATASLCallbackParams));
+    EXPECT_NE(newListNode, nullptr);
+    (void)memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams.udid, queryParams.udidLen);
+    newListNode->queryParams.udidLen = queryParams.udidLen;
+    newListNode->callback = nullptr;
+    RemoveListNode(g_tmpList, newListNode);
+    PushListNode(g_tmpList, newListNode);
+    RemoveListNode(g_tmpList, newListNode);
+
+    ClearList(g_tmpList);
+    g_tmpList = nullptr;
+    DATASL_OnStop();
 }
