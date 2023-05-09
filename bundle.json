@@ -22,7 +22,7 @@
             "standard"
         ],
         "rom": "30KB",
-        "ram": "",
+        "ram": " ",
         "deps": {
             "components": [
                 "device_security_level",
