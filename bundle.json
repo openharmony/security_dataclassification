@@ -21,12 +21,13 @@
         "adapted_system_type": [
             "standard"
         ],
-        "rom": "50KB",
-        "ram": "50KB",
+        "rom": "30KB",
+        "ram": " ",
         "deps": {
             "components": [
                 "device_security_level",
-                "hiviewdfx_hilog_native"
+                "hiviewdfx_hilog_native",
+                "c_utils"
             ],
             "third_party": []
         },
