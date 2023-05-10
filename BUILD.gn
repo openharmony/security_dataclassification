@@ -13,5 +13,5 @@
 
 import("//build/ohos.gni")
 group("dataclassification_build_module") {
-  deps = [ "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
+  deps = [ "interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
 }
