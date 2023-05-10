@@ -25,9 +25,10 @@
         "ram": " ",
         "deps": {
             "components": [
+                "access_token",
+                "c_utils",
                 "device_security_level",
-                "hiviewdfx_hilog_native",
-                "c_utils"
+                "hiviewdfx_hilog_native"
             ],
             "third_party": []
         },
