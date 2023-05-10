@@ -16,7 +16,7 @@ import("//build/test.gni")
 
 ohos_fuzztest("DataTransmitMgrFuzzTest") {
   module_out_path = "security/dataclassification"
-  fuzz_config_file = "./"
+  fuzz_config_file = "//base/security/dataclassification/test/fuzztest/datatransmitmgr/datatransmitmgr_fuzzer"
 
   cflags = [
     "-g",
@@ -25,16 +25,22 @@ ohos_fuzztest("DataTransmitMgrFuzzTest") {
     "-fno-omit-frame-pointer",
   ]
 
-  include_dirs = [ "../../../interfaces/innerkits/datatransmitmgr/include" ]
+  include_dirs = [
+    "//base/security/dataclassification/test/fuzztest/datatransmitmgr/datatransmitmgr_fuzzer",
+    "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr/include",
+  ]
 
   sources = [ "datatransmitmgr_fuzzer.cpp" ]
 
+  deps = [
+    "//base/security/access_token/interfaces/innerkits/accesstoken:libaccesstoken_sdk",
+    "//base/security/access_token/interfaces/innerkits/nativetoken:libnativetoken",
+    "//base/security/access_token/interfaces/innerkits/token_setproc:libtoken_setproc",
+    "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr",
+  ]
+
   external_deps = [
-    "access_token:libaccesstoken_sdk",
-    "access_token:libnativetoken",
-    "access_token:libtoken_setproc",
     "c_utils:utils",
-    "dataclassification:data_transit_mgr",
     "dsoftbus:softbus_client",
     "hiviewdfx_hilog_native:libhilog",
   ]
