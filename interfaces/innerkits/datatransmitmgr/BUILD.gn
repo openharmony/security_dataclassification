@@ -29,9 +29,9 @@ ohos_shared_library("data_transit_mgr") {
   include_dirs = [ "include" ]
 
   sources = [
-    "//base/security/dataclassification/frameworks/datatransmitmgr/dev_slinfo_adpt.c",
-    "//base/security/dataclassification/frameworks/datatransmitmgr/dev_slinfo_list.c",
-    "//base/security/dataclassification/frameworks/datatransmitmgr/dev_slinfo_mgr.c",
+    "../../../frameworks/datatransmitmgr/dev_slinfo_adpt.c",
+    "../../../frameworks/datatransmitmgr/dev_slinfo_list.c",
+    "../../../frameworks/datatransmitmgr/dev_slinfo_mgr.c",
   ]
 
   external_deps = [
