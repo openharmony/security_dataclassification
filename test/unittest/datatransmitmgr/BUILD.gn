@@ -43,6 +43,6 @@ ohos_unittest("DevSLMgrTest") {
     "c_utils:utils",
     "device_security_level:dslm_sdk",
     "dsoftbus:softbus_client",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
   ]
 }
