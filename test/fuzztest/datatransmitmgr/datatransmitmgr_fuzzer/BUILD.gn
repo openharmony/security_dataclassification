@@ -42,7 +42,7 @@ ohos_fuzztest("DataTransmitMgrFuzzTest") {
   external_deps = [
     "c_utils:utils",
     "dsoftbus:softbus_client",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
   ]
   cflags_cc = [ "--coverage" ]
   ldflags = [ "--coverage" ]
