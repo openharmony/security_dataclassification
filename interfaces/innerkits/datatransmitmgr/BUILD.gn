@@ -37,7 +37,7 @@ ohos_shared_library("data_transit_mgr") {
   external_deps = [
     "c_utils:utils",
     "device_security_level:dslm_sdk",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
   ]
 
   cflags = [ "-Wall" ]
