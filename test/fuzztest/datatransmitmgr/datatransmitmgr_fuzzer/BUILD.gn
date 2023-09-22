@@ -32,18 +32,10 @@ ohos_fuzztest("DataTransmitMgrFuzzTest") {
 
   sources = [ "datatransmitmgr_fuzzer.cpp" ]
 
-  deps = [
-    "//base/security/access_token/interfaces/innerkits/accesstoken:libaccesstoken_sdk",
-    "//base/security/access_token/interfaces/innerkits/nativetoken:libnativetoken",
-    "//base/security/access_token/interfaces/innerkits/token_setproc:libtoken_setproc",
-    "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr",
-  ]
+  deps = [ "../../../../interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
 
   external_deps = [
     "c_utils:utils",
-    "dsoftbus:softbus_client",
     "hilog:libhilog",
   ]
-  cflags_cc = [ "--coverage" ]
-  ldflags = [ "--coverage" ]
 }
