@@ -29,15 +29,15 @@ namespace OHOS {
 
     void FuzzDoDataTransmitMgr(const uint8_t* data, size_t size)
     {
-        if (data == nullptr || size < MAX_UDID_LENGTH) {
+        if (data == nullptr || size <= MAX_UDID_LENGTH) {
             return;
         }
 
         uint32_t levelInfo = 0;
         DEVSLQueryParams queryParams;
         (void)memset_s(&queryParams, sizeof(DEVSLQueryParams), 0, sizeof(DEVSLQueryParams));
-        queryParams.udidLen = MAX_UDID_LENGTH;
-        (void)memcpy_s(queryParams.udid, queryParams.udidLen, data, MAX_UDID_LENGTH);
+        queryParams.udidLen = size;
+        (void)memcpy_s(queryParams.udid, MAX_UDID_LENGTH, data, MAX_UDID_LENGTH);
 
         (void)DATASL_OnStart();
         (void)DATASL_GetHighestSecLevelAsync(&queryParams, tmpCallback);
