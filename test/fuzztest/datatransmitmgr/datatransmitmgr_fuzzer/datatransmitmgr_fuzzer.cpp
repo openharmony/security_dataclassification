@@ -29,7 +29,7 @@ namespace OHOS {
 
     void FuzzDoDataTransmitMgr(const uint8_t* data, size_t size)
     {
-        if (data == nullptr || size > MAX_UDID_LENGTH) {
+        if (data == nullptr || size < MAX_UDID_LENGTH) {
             return;
         }
 
