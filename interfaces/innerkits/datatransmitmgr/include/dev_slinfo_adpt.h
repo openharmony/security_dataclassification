@@ -40,7 +40,7 @@ typedef int32_t (*RequestDeviceSecurityInfoAsyncFunction)(const DeviceIdentify *
 
 typedef void (*FreeDeviceSecurityInfoFunction)(DeviceSecurityInfo *info);
 
-typedef uint32_t (*GetDeviceSecurityLevelValueFunction)(const DeviceSecurityInfo *info, int32_t *level);
+typedef int32_t (*GetDeviceSecurityLevelValueFunction)(const DeviceSecurityInfo *info, int32_t *level);
 
 typedef struct {
     RequestDeviceSecurityInfoFunction requestDeviceSecurityInfo;
