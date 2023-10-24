@@ -30,7 +30,7 @@
 
 using namespace testing::ext;
 class DevSLMgrTest : public testing::Test {
-protected:
+public:
     DevSLMgrTest();
     ~DevSLMgrTest();
     static void SetUpTestCase();
@@ -38,6 +38,7 @@ protected:
     void SetUp() override;
     void TearDown() override;
 private:
+    static bool isEnforcing_;
 };
 
 static const int32_t DEV_SEC_LEVEL_ERR = 100;
@@ -79,15 +80,25 @@ DevSLMgrTest::DevSLMgrTest() {}
 DevSLMgrTest::~DevSLMgrTest() {}
 void DevSLMgrTest::SetUpTestCase()
 {
-    OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "0");
+    string isEnforcing;
+    OHOS::LoadStringFromFile("/sys/fs/selinux/enforce", isEnforcing);
+    if (isEnforcing.compare("1") == 0) {
+        DevSLMgrTest::isEnforcing_ = true;
+        OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "0");
+    }
     NativeTokenGet();
 }
 void DevSLMgrTest::TearDownTestCase()
 {
-    OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "1");
+    if (DevSLMgrTest::isEnforcing_) {
+        OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "1");
+    }
 }
 void DevSLMgrTest::SetUp() {}
+
 void DevSLMgrTest::TearDown() {}
+
+bool DevSLMgrTest::isEnforcing_ = false;
 
 static void DATASL_GetUdidByOpp(DEVSLQueryParams *queryParams)
 {
