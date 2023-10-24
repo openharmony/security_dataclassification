@@ -81,7 +81,7 @@ DevSLMgrTest::~DevSLMgrTest() {}
 void DevSLMgrTest::SetUpTestCase()
 {
     string isEnforcing;
-    OHOS::LoadStringFormFile("/sys/fs/selinux/enforce", isEnforcing);
+    OHOS::LoadStringFromFile("/sys/fs/selinux/enforce", isEnforcing);
     if (isEnforcing.compare("1") == 0) {
         DevSLMgrTest::isEnforcing_ = true;
         OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "0");
