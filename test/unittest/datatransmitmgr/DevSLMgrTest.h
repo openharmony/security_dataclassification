@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,22 +15,5 @@
 
 #ifndef DATASECURITYLEVEL_TEST_H
 #define DATASECURITYLEVEL_TEST_H
-
-int TestOnstart(void);
-int TestGetHighestSecLevel001(void);
-int TestGetHighestSecLevel002(void);
-int TestGetHighestSecLevel003(void);
-int TestGetHighestSecLevel004(void);
-
-int TestGetHighestSecLevelAsync001(void);
-int TestGetHighestSecLevelAsync002(void);
-int TestGetHighestSecLevelAsync003(void);
-int TestGetHighestSecLevelAsync004(void);
-
-int TestGetHighestSecLevelExcept001(void);
-int TestGetHighestSecLevelExcept002(void);
-int TestGetHighestSecLevelExcept003(void);
-int TestGetHighestSecLevelExcept004(void);
-int TestGetHighestSecLevelExcept005(void);
 
 #endif
