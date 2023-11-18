@@ -44,7 +44,7 @@ static int32_t DlopenSDK(void)
 {
     g_deviceSecLevelHandle = dlopen("libdslm_sdk.z.so", RTLD_LAZY | RTLD_NODELETE);
     if (g_deviceSecLevelHandle == NULL) {
-        DATA_SEC_LOG_ERROR("failed to load libdevicesecmgrsdktmp: %s", dlerror());
+        DATA_SEC_LOG_ERROR("Failed to load libdevicesecmgrsdktmp: %s", dlerror());
         return DEVSL_ERROR;
     }
 
@@ -66,7 +66,7 @@ static int32_t InitDeviceSecEnv(void)
     if (requestDeviceSecurityInfo == NULL) {
         dlclose(g_deviceSecLevelHandle);
         g_deviceSecLevelHandle = NULL;
-        DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
+        DATA_SEC_LOG_ERROR("Failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
     FreeDeviceSecurityInfoFunction freeDeviceSecurityInfo = (FreeDeviceSecurityInfoFunction)dlsym(
@@ -74,7 +74,7 @@ static int32_t InitDeviceSecEnv(void)
     if (freeDeviceSecurityInfo == NULL) {
         dlclose(g_deviceSecLevelHandle);
         g_deviceSecLevelHandle = NULL;
-        DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
+        DATA_SEC_LOG_ERROR("Failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
     GetDeviceSecurityLevelValueFunction getDeviceSecurityLevelValue = (GetDeviceSecurityLevelValueFunction)dlsym(
@@ -82,7 +82,7 @@ static int32_t InitDeviceSecEnv(void)
     if (getDeviceSecurityLevelValue == NULL) {
         dlclose(g_deviceSecLevelHandle);
         g_deviceSecLevelHandle = NULL;
-        DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
+        DATA_SEC_LOG_ERROR("Failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
     RequestDeviceSecurityInfoAsyncFunction requestDeviceSecurityInfoAsync =
@@ -90,7 +90,7 @@ static int32_t InitDeviceSecEnv(void)
     if (requestDeviceSecurityInfoAsync == NULL) {
         dlclose(g_deviceSecLevelHandle);
         g_deviceSecLevelHandle = NULL;
-        DATA_SEC_LOG_ERROR("failed to find symbol: %s", dlerror());
+        DATA_SEC_LOG_ERROR("Failed to find symbol: %s", dlerror());
         return DEVSL_ERROR;
     }
     (void)memset_s(&g_deviceSecEnv, sizeof(g_deviceSecEnv), 0, sizeof(g_deviceSecEnv));
