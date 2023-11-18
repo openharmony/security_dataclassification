@@ -469,6 +469,6 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level1)
     g_tmpList = nullptr;
     DATASL_OnStop();
 }
-}
-}
-}
+} // namespace DevSLMgrTest
+} // namespace Security
+} // namespace OHOS
