@@ -15,10 +15,16 @@
 
 #include "datatransmitmgr_fuzzer.h"
 
+#include <climits>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "securec.h"
+
 #include "dev_slinfo_mgr.h"
 
 namespace OHOS {
