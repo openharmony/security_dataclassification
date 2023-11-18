@@ -16,21 +16,4 @@
 #ifndef DATASECURITYLEVEL_TEST_H
 #define DATASECURITYLEVEL_TEST_H
 
-#include <gtest/gtest.h>
-
-namespace OHOS {
-namespace Security {
-namespace DevSLMgrTest {
-using namespace testing::ext;
-class DevSLMgrTest : public testing::Test {
-public:
-    static void SetUpTestCase();
-    static void TearDownTestCase();
-    void SetUp() override;
-    void TearDown() override;
-};
-} // namespace DevSLMgrTest
-} // namespace Security
-} // namespace OHOS
-
 #endif
