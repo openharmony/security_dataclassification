@@ -14,8 +14,10 @@
  */
 
 #include "dev_slinfo_list.h"
+
 #include <pthread.h>
 #include "securec.h"
+
 #include "dev_slinfo_adpt.h"
 #include "dev_slinfo_log.h"
 
@@ -153,8 +155,7 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
 
 int32_t InitPthreadMutex(void)
 {
-    int32_t ret;
-    ret = pthread_mutex_init(&g_mutex, NULL);
+    int32_t ret = pthread_mutex_init(&g_mutex, NULL);
     return ret;
 }
 
