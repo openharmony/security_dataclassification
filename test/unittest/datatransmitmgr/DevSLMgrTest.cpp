@@ -39,7 +39,9 @@ struct DeviceSecurityInfo {
 extern "C" {
     extern void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSecurityInfo *info);
 }
-
+namespace OHOS {
+namespace Security {
+namespace DevSLMgrTest {
 static void NativeTokenGet()
 {
     uint64_t tokenId;
@@ -463,4 +465,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level1)
     ClearList(g_tmpList);
     g_tmpList = nullptr;
     DATASL_OnStop();
+}
+}
+}
 }
