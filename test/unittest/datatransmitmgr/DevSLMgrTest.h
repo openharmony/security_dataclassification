@@ -33,8 +33,8 @@ public:
 private:
     static bool isEnforcing_;
 };
-}
-}
-}
+} // namespace DevSLMgrTest
+} // namespace Security
+} // namespace OHOS
 
 #endif
