@@ -13,19 +13,22 @@
  * limitations under the License.
  */
 
+#include "DevSLMgrTest.h"
+
+#include <condition_variable>
 #include <iostream>
 #include <mutex>
 #include <thread>
-#include <condition_variable>
+
+#include "accesstoken_kit.h"
 #include "file_ex.h"
+#include "nativetoken_kit.h"
 #include "securec.h"
 #include "softbus_bus_center.h"
-#include "dev_slinfo_adpt.h"
-#include "DevSLMgrTest.h"
-#include "DevslinfoListTest.h"
-#include "nativetoken_kit.h"
 #include "token_setproc.h"
-#include "accesstoken_kit.h"
+
+#include "DevslinfoListTest.h"
+#include "dev_slinfo_adpt.h"
 
 static const int32_t DEV_SEC_LEVEL_ERR = 100;
 static const int32_t LIST_LENGTH = 128;
