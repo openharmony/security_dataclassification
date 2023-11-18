@@ -14,8 +14,11 @@
  */
 
 #include "dev_slinfo_adpt.h"
+
 #include <dlfcn.h>
+
 #include "securec.h"
+
 #include "dev_slinfo_list.h"
 #include "dev_slinfo_log.h"
 #include "dev_slinfo_mgr.h"
