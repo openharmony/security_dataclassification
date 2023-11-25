@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,18 +16,49 @@
 #ifndef DEV_SLINFO_LOG_H
 #define DEV_SLINFO_LOG_H
 
-#include <stdio.h>
+#ifdef HILOG_ENABLE
 
+typedef enum {
+    LOG_LEVEL_DEBUG = 0,
+    LOG_LEVEL_INFO = 1,
+    LOG_LEVEL_WARN = 2,
+    LOG_LEVEL_ERROR = 3
+} LogLevel;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void DataSlLogPrint(LogLevel level, const char *funName, const char *fmt, ...);
+
+#ifdef __cplusplus
+}
+#endif
+ 
 #include "hilog/log.h"
 
-#ifdef LOG_TAG
-#undef LOG_TAG
+#ifndef LOG_DOMAIN
+#define LOG_DOMAIN 0xD002F04
 #endif
-#define LOG_TAG "DATA_SEC_LEVEL: "
 
-#define DATA_SEC_LOG_DEBUG(fmt, ...) HILOG_DEBUG(LOG_CORE, fmt, ##__VA_ARGS__)
-#define DATA_SEC_LOG_INFO(fmt, ...) HILOG_INFO(LOG_CORE, fmt, ##__VA_ARGS__)
-#define DATA_SEC_LOG_WARN(fmt, ...) HILOG_WARN(LOG_CORE, fmt, ##__VA_ARGS__)
-#define DATA_SEC_LOG_ERROR(fmt, ...) HILOG_ERROR(LOG_CORE, fmt, ##__VA_ARGS__)
-#define DATA_SEC_LOG_FATAL(fmt, ...) HILOG_FATAL(LOG_CORE, fmt, ##__VA_ARGS__)
+#define DATA_SEC_LOG_DEBUG(fmt, ...) (DataSlLogPrint(LOG_LEVEL_DEBUG, __FUNCTION__, fmt, ##__VA_ARGS__))
+#define DATA_SEC_LOG_INFO(fmt, ...) (DataSlLogPrint(LOG_LEVEL_INFO, __FUNCTION__, fmt, ##__VA_ARGS__))
+#define DATA_SEC_LOG_WARN(fmt, ...) (DataSlLogPrint(LOG_LEVEL_WARN, __FUNCTION__, fmt, ##__VA_ARGS__))
+#define DATA_SEC_LOG_ERROR(fmt, ...) (DataSlLogPrint(LOG_LEVEL_ERROR, __FUNCTION__, fmt, ##__VA_ARGS__))
+
+#define DataSl_LOG_DEBUG(fmt, ...) HiLogPrint(LOG_CORE, LOG_DEBUG, LOG_DOMAIN, "[DataSl]", "%{public}s", buf)
+#define DataSl_LOG_INFO(buf) HiLogPrint(LOG_CORE, LOG_INFO, LOG_DOMAIN, "[DataSl]", "%{public}s", buf)
+#define DataSl_LOG_WARN(buf) HiLogPrint(LOG_CORE, LOG_WARN, LOG_DOMAIN, "[DataSl]", "%{public}s", buf)
+#define DataSl_LOG_ERROR(buf) HiLogPrint(LOG_CORE, LOG_ERROR, LOG_DOMAIN, "[DataSl]", "%{public}s", buf)
+
+#else
+
+#include <stdio.h>
+
+#define DATA_SEC_LOG_DEBUG(fmt, ...) printf("[DataSl][D][%s]: " fmt "\n", __FUNCTION__, ##__VA_ARGS__)
+#define DATA_SEC_LOG_INFO(fmt, ...) printf("[DataSl][I][%s]: " fmt "\n", __FUNCTION__, ##__VA_ARGS__)
+#define DATA_SEC_LOG_WARN(fmt, ...) printf("[DataSl][W][%s]: " fmt "\n", __FUNCTION__, ##__VA_ARGS__)
+#define DATA_SEC_LOG_ERROR(fmt, ...) printf("[DataSl][E][%s]: " fmt "\n", __FUNCTION__, ##__VA_ARGS__)
+
+#endif
 #endif
