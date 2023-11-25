@@ -13,22 +13,33 @@
  * limitations under the License.
  */
 
-#include "DevSLMgrTest.h"
-
-#include <condition_variable>
 #include <iostream>
 #include <mutex>
 #include <thread>
-
-#include "accesstoken_kit.h"
+#include <condition_variable>
+#include "gtest/gtest.h"
 #include "file_ex.h"
-#include "nativetoken_kit.h"
 #include "securec.h"
 #include "softbus_bus_center.h"
-#include "token_setproc.h"
-
-#include "DevslinfoListTest.h"
 #include "dev_slinfo_adpt.h"
+#include "DevSLMgrTest.h"
+#include "DevslinfoListTest.h"
+#include "nativetoken_kit.h"
+#include "token_setproc.h"
+#include "accesstoken_kit.h"
+
+using namespace testing::ext;
+class DevSLMgrTest : public testing::Test {
+public:
+    DevSLMgrTest();
+    ~DevSLMgrTest();
+    static void SetUpTestCase();
+    static void TearDownTestCase();
+    void SetUp() override;
+    void TearDown() override;
+private:
+    static bool isEnforcing_;
+};
 
 static const int32_t DEV_SEC_LEVEL_ERR = 100;
 static const int32_t LIST_LENGTH = 128;
@@ -42,9 +53,7 @@ struct DeviceSecurityInfo {
 extern "C" {
     extern void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSecurityInfo *info);
 }
-namespace OHOS {
-namespace Security {
-namespace DevSLMgrTest {
+
 static void NativeTokenGet()
 {
     uint64_t tokenId;
@@ -469,6 +478,3 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level1)
     g_tmpList = nullptr;
     DATASL_OnStop();
 }
-} // namespace DevSLMgrTest
-} // namespace Security
-} // namespace OHOS
