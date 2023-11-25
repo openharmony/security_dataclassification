@@ -38,7 +38,7 @@ void DataSlLogPrint(LogLevel level, const char *funName, const char *fmt, ...);
 #include "hilog/log.h"
 
 #ifndef LOG_DOMAIN
-#define LOG_DOMAIN 0xD002F10
+#define LOG_DOMAIN 0xD002F04
 #endif
 
 #define DATA_SEC_LOG_DEBUG(fmt, ...) (DataSlLogPrint(LOG_LEVEL_DEBUG, __FUNCTION__, fmt, ##__VA_ARGS__))
