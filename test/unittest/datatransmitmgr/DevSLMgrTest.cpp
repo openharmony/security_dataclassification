@@ -261,6 +261,7 @@ static void tmpCallbackLocal(DEVSLQueryParams *queryParams, int32_t result, uint
 {
     g_cnt++;
     EXPECT_EQ(DEVSL_SUCCESS, result);
+    g_cv.notify_one();
 }
 
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync004, TestSize.Level1)
