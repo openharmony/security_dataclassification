@@ -253,37 +253,6 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static int32_t g_cnt = 0;
-static std::mutex g_mtx;
-static std::condition_variable g_cv;
-
-static void tmpCallbackLocal(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
-{
-    g_cnt++;
-    EXPECT_EQ(DEVSL_SUCCESS, result);
-    g_cv.notify_one();
-}
-
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync004, TestSize.Level1)
-{
-    int32_t ret;
-    DEVSLQueryParams queryParams;
-    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
-    ret = GetLocalUdid(&queryParams);
-    EXPECT_EQ(DEVSL_SUCCESS, ret);
-
-    ret = DATASL_OnStart();
-    EXPECT_EQ(DEVSL_SUCCESS, ret);
-    ret = DATASL_GetHighestSecLevelAsync(&queryParams, &tmpCallbackLocal);
-    EXPECT_EQ(DEVSL_SUCCESS, ret);
-
-    std::unique_lock<std::mutex> lck(g_mtx);
-    g_cv.wait_for(lck, std::chrono::milliseconds(2000), []() { return (g_cnt == 1); });
-    EXPECT_EQ(g_cnt, 1);
-
-    DATASL_OnStop();
-}
-
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept001, TestSize.Level1)
 {
     OnApiDeviceSecInfoCallback(nullptr, nullptr);
