@@ -13,33 +13,22 @@
  * limitations under the License.
  */
 
+#include "DevSLMgrTest.h"
+
+#include <condition_variable>
 #include <iostream>
 #include <mutex>
 #include <thread>
-#include <condition_variable>
-#include "gtest/gtest.h"
+
+#include "accesstoken_kit.h"
 #include "file_ex.h"
+#include "nativetoken_kit.h"
 #include "securec.h"
 #include "softbus_bus_center.h"
-#include "dev_slinfo_adpt.h"
-#include "DevSLMgrTest.h"
-#include "DevslinfoListTest.h"
-#include "nativetoken_kit.h"
 #include "token_setproc.h"
-#include "accesstoken_kit.h"
 
-using namespace testing::ext;
-class DevSLMgrTest : public testing::Test {
-public:
-    DevSLMgrTest();
-    ~DevSLMgrTest();
-    static void SetUpTestCase();
-    static void TearDownTestCase();
-    void SetUp() override;
-    void TearDown() override;
-private:
-    static bool isEnforcing_;
-};
+#include "DevslinfoListTest.h"
+#include "dev_slinfo_adpt.h"
 
 static const int32_t DEV_SEC_LEVEL_ERR = 100;
 static const int32_t LIST_LENGTH = 128;
@@ -53,7 +42,9 @@ struct DeviceSecurityInfo {
 extern "C" {
     extern void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSecurityInfo *info);
 }
-
+namespace OHOS {
+namespace Security {
+namespace DevSLMgrTest {
 static void NativeTokenGet()
 {
     uint64_t tokenId;
@@ -253,6 +244,36 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
     DATASL_OnStop();
 }
 
+static int32_t g_cnt = 0;
+static std::mutex g_mtx;
+static std::condition_variable g_cv;
+
+static void tmpCallbackLocal(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
+{
+    g_cnt++;
+    EXPECT_EQ(DEVSL_SUCCESS, result);
+}
+
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync004, TestSize.Level1)
+{
+    int32_t ret;
+    DEVSLQueryParams queryParams;
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
+    ret = GetLocalUdid(&queryParams);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+
+    ret = DATASL_OnStart();
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+    ret = DATASL_GetHighestSecLevelAsync(&queryParams, &tmpCallbackLocal);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+
+    std::unique_lock<std::mutex> lck(g_mtx);
+    g_cv.wait_for(lck, std::chrono::milliseconds(2000), []() { return (g_cnt == 1); });
+    EXPECT_EQ(g_cnt, 1);
+
+    DATASL_OnStop();
+}
+
 static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept001, TestSize.Level1)
 {
     OnApiDeviceSecInfoCallback(nullptr, nullptr);
@@ -448,3 +469,6 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level1)
     g_tmpList = nullptr;
     DATASL_OnStop();
 }
+} // namespace DevSLMgrTest
+} // namespace Security
+} // namespace OHOS
