@@ -51,6 +51,9 @@ ohos_unittest("DevSLMgrTest") {
     "//base/security/access_token/interfaces/innerkits/token_setproc:libtoken_setproc",
     "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr",
   ]
+
+  defines = [ "HILOG_ENABLE" ]
+
   external_deps = [
     "c_utils:utils",
     "device_security_level:dslm_sdk",
