@@ -20,7 +20,7 @@
 #include "gtest/gtest.h"
 #include "file_ex.h"
 #include "securec.h"
-#include "softbus_bus_center.h"
+#include "parameter.h"
 #include "dev_slinfo_adpt.h"
 #include "DevSLMgrTest.h"
 #include "DevslinfoListTest.h"
@@ -123,14 +123,13 @@ static void DATASL_GetUdidByExceptZero(DEVSLQueryParams *queryParams)
 
 static int32_t GetLocalUdid(DEVSLQueryParams *queryParams)
 {
-    const char *pkgName = "ohos.dslm";
-    NodeBasicInfo info;
-    int32_t ret = GetLocalNodeDeviceInfo(pkgName, &info);
-    if (GetNodeKeyInfo(pkgName, info.networkId, NODE_KEY_UDID, (uint8_t *)(queryParams->udid), UDID_BUF_LEN) != 0) {
-        return ret;
-    }
+    char udid[65] = {0};
+    int32_t ret = GetDevUdid(udid, MAX_UDID_LENGTH + 1);
+    EXPECT_EQ(DEVSL_SUCCESS, ret);
+
+    (void)memcpy_s(queryParams->udid, MAX_UDID_LENGTH, udid, MAX_UDID_LENGTH);
     queryParams->udidLen = MAX_UDID_LENGTH;
-    return DEVSL_SUCCESS;
+    return ret;
 }
 
 static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
