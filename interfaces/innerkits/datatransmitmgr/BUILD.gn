@@ -31,7 +31,6 @@ ohos_shared_library("data_transit_mgr") {
   sources = [
     "../../../frameworks/datatransmitmgr/dev_slinfo_adpt.c",
     "../../../frameworks/datatransmitmgr/dev_slinfo_list.c",
-    "../../../frameworks/datatransmitmgr/dev_slinfo_log.c",
     "../../../frameworks/datatransmitmgr/dev_slinfo_mgr.c",
   ]
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,42 +16,24 @@
 #ifndef DEV_SLINFO_LOG_H
 #define DEV_SLINFO_LOG_H
 
-#define LOG_PRINT_MAX_LEN 1024
-
-typedef enum {
-    LOG_LEVEL_DEBUG = 0,
-    LOG_LEVEL_INFO = 1,
-    LOG_LEVEL_WARN = 2,
-    LOG_LEVEL_ERROR = 3
-} DataSlLogLevel;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void DataSlLogPrint(DataSlLogLevel level, const char *funName, const char *fmt, ...);
-
-#ifdef __cplusplus
-}
-#endif
-
 #ifdef HILOG_ENABLE
  
 #include "hilog/log.h"
 
-#ifndef DATASL_LOG_DOMAIN
-#define DATASL_LOG_DOMAIN 0xD002F04
+#ifdef LOG_TAG
+#undef LOG_TAG
 #endif
+#define LOG_TAG "DataSl"
 
-#define DATA_SEC_LOG_DEBUG(fmt, ...) (DataSlLogPrint(LOG_LEVEL_DEBUG, __FUNCTION__, fmt, ##__VA_ARGS__))
-#define DATA_SEC_LOG_INFO(fmt, ...) (DataSlLogPrint(LOG_LEVEL_INFO, __FUNCTION__, fmt, ##__VA_ARGS__))
-#define DATA_SEC_LOG_WARN(fmt, ...) (DataSlLogPrint(LOG_LEVEL_WARN, __FUNCTION__, fmt, ##__VA_ARGS__))
-#define DATA_SEC_LOG_ERROR(fmt, ...) (DataSlLogPrint(LOG_LEVEL_ERROR, __FUNCTION__, fmt, ##__VA_ARGS__))
+#ifdef LOG_DOMAIN
+#undef LOG_DOMAIN
+#endif
+#define LOG_DOMAIN 0xD002F04
 
-#define DataSl_LOG_DEBUG(buf) HiLogPrint(LOG_CORE, LOG_DEBUG, DATASL_LOG_DOMAIN, "[DataSl]", "%{public}s", buf)
-#define DataSl_LOG_INFO(buf) HiLogPrint(LOG_CORE, LOG_INFO, DATASL_LOG_DOMAIN, "[DataSl]", "%{public}s", buf)
-#define DataSl_LOG_WARN(buf) HiLogPrint(LOG_CORE, LOG_WARN, DATASL_LOG_DOMAIN, "[DataSl]", "%{public}s", buf)
-#define DataSl_LOG_ERROR(buf) HiLogPrint(LOG_CORE, LOG_ERROR, DATASL_LOG_DOMAIN, "[DataSl]", "%{public}s", buf)
+#define DATA_SEC_LOG_DEBUG(fmt, ...) HILOG_DEBUG(LOG_CORE, fmt, ##__VA_ARGS__)
+#define DATA_SEC_LOG_INFO(fmt, ...) HILOG_INFO(LOG_CORE, fmt, ##__VA_ARGS__)
+#define DATA_SEC_LOG_WARN(fmt, ...) HILOG_WARN(LOG_CORE, fmt, ##__VA_ARGS__)
+#define DATA_SEC_LOG_ERROR(fmt, ...) HILOG_ERROR(LOG_CORE, fmt, ##__VA_ARGS__)
 
 #else
 
