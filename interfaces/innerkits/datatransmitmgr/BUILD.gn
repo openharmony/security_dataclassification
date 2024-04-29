@@ -20,6 +20,14 @@ config("datatransmitmgr_config") {
   include_dirs = [ "include" ]
 }
 
+declare_args() {
+  dataclassification_feature_enabled = true
+  if (defined(global_parts_info) &&
+      !defined(global_parts_info.commonlibrary_c_utils)) {
+    dataclassification_feature_enabled = false
+  }
+}
+
 ohos_shared_library("data_transit_mgr") {
   subsystem_name = "security"
   part_name = "dataclassification"
@@ -45,9 +53,10 @@ ohos_shared_library("data_transit_mgr") {
       stack_protector_ret = true
     }
   }
-
+  if (dataclassification_feature_enabled) {
+    external_deps = ["c_utils:utils"]
+  }
   external_deps = [
-    "c_utils:utils",
     "device_security_level:dslm_sdk",
     "hilog:libhilog",
   ]
