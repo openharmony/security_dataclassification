@@ -56,7 +56,7 @@ ohos_shared_library("data_transit_mgr") {
   if (dataclassification_feature_enabled) {
     external_deps = ["c_utils:utils"]
   }
-  external_deps = [
+  external_deps += [
     "device_security_level:dslm_sdk",
     "hilog:libhilog",
   ]
