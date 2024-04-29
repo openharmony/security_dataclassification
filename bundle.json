@@ -16,7 +16,7 @@
             "SystemCapability.Security.DataTransitManager"
         ],
         "features": [
-            "dataclassification_datatransmitmgr"
+            "dataclassification_feature_enabled"
         ],
         "adapted_system_type": [
             "standard"
