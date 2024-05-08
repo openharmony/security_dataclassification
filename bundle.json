@@ -19,7 +19,9 @@
             "dataclassification_feature_enabled"
         ],
         "adapted_system_type": [
-            "standard"
+            "standard",
+            "small",
+            "mini"
         ],
         "rom": "30KB",
         "ram": " ",
@@ -47,8 +49,7 @@
                 }
             ],
             "test": [
-                "//base/security/dataclassification/test/unittest/datatransmitmgr:DevSLMgrTest",
-                "//base/security/dataclassification/test/fuzztest/datatransmitmgr/datatransmitmgr_fuzzer:DataTransmitMgrFuzzTest"
+                "//base/security/dataclassification/test:dataclassification_test_build"
             ]
         }
     }
