@@ -17,14 +17,17 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <mutex>
+#include <thread>
 
 #include "file_ex.h"
 #include "securec.h"
 #include "nativetoken_kit.h"
 #include "token_setproc.h"
 #include "accesstoken_kit.h"
-
 #include "dev_slinfo_mgr.h"
+
+#define DELAY_TIME 3000
 
 namespace OHOS {
 static bool g_isForcingFuzz1 = false;
@@ -69,8 +72,13 @@ static void EndFuzzCase1(void)
     }
 }
 
+static int32_t g_cnt = 0;
+static std::mutex g_mtx;
+static std::condition_variable g_cv;
+
 static void tmpCallbackFuzz1(DEVSLQueryParams *queryParams, int32_t result, uint32_t levelInfo)
 {
+    g_cnt++;
     (void)queryParams;
     (void)result;
     (void)levelInfo;
@@ -92,6 +100,9 @@ void FuzzDoGetHighestSecLevelAsync(const uint8_t *data, size_t size)
     (void)DATASL_GetHighestSecLevelAsync(&queryParams, tmpCallbackFuzz1);
     (void)DATASL_GetHighestSecLevelAsync(nullptr, tmpCallbackFuzz1);
     (void)DATASL_GetHighestSecLevelAsync(&queryParams, nullptr);
+
+    std::unique_lock<std::mutex> lck(g_mtx);
+    g_cv.wait_for(lck, std::chrono::milliseconds(DELAY_TIME), []() { return (g_cnt == 1); });
     DATASL_OnStop();
     EndFuzzCase1();
 }
