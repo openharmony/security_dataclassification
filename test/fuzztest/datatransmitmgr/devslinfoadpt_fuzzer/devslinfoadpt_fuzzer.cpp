@@ -109,7 +109,6 @@ void FuzzDoDevSlinfoAdpt(const uint8_t* data, size_t size)
     queryParams.udidLen = MAX_UDID_LENGTH;
     (void)memcpy_s(queryParams.udid, MAX_UDID_LENGTH, data, MAX_UDID_LENGTH);
     BeginFuzzCase3();
-    int32_t ret;
     uint32_t levelInfo = 0;
     int32_t devLevel = 0;
     DeviceIdentify devId;
@@ -117,7 +116,7 @@ void FuzzDoDevSlinfoAdpt(const uint8_t* data, size_t size)
     (void)DATASL_OnStart();
 
     do {
-        ret = GetLocalUdidFuzz3(&queryParams);
+        int32_t ret = GetLocalUdidFuzz3(&queryParams);
         if (ret != DEVSL_SUCCESS) {
             break;
         }
