@@ -45,7 +45,7 @@ ohos_unittest("DevSLMgrTest") {
     }
   }
 
-  deps = [ "dataclassification:data_transit_mgr" ]
+  deps = [ "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
 
   defines = [ "HILOG_ENABLE" ]
 
