@@ -27,8 +27,10 @@
         "ram": " ",
         "deps": {
             "components": [
+                "access_token",
                 "device_security_level",
                 "hilog",
+                "init",
                 "c_utils"
             ],
             "third_party": []
