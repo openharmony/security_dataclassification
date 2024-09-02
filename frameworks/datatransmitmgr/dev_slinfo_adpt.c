@@ -103,9 +103,9 @@ static int32_t InitDeviceSecEnv(void)
 
 int32_t StartDevslEnv(void)
 {
-    DATA_SEC_LOG_INFO("Enter InitDeviceSecEnv...");
+    DATA_SEC_LOG_DEBUG("Enter InitDeviceSecEnv...");
     int32_t ret = InitDeviceSecEnv();
-    DATA_SEC_LOG_INFO("InitDeviceSecEnv done!");
+    DATA_SEC_LOG_DEBUG("InitDeviceSecEnv done!");
     if (ret != DEVSL_SUCCESS) {
         return DEVSL_ERR_DEVICE_SEC_SDK_INIT;
     }
@@ -133,7 +133,7 @@ void FinishDevslEnv(void)
 
 int32_t GetDeviceSecLevelByUdid(const uint8_t *udid, uint32_t udidLen, int32_t *devLevel)
 {
-    DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdid...");
+    DATA_SEC_LOG_DEBUG("Enter GetDeviceSecLevelByUdid...");
     if (g_deviceSecEnv.requestDeviceSecurityInfo == NULL) {
         DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdid: requestDeviceSecurityInfo is invalid");
         return DEVSL_ERROR;
@@ -177,21 +177,21 @@ int32_t GetDeviceSecLevelByUdid(const uint8_t *udid, uint32_t udidLen, int32_t *
     }
 
     g_deviceSecEnv.freeDeviceSecurityInfo(info);
-    DATA_SEC_LOG_INFO("GetDeviceSecLevelByUdid done!");
+    DATA_SEC_LOG_DEBUG("GetDeviceSecLevelByUdid done!");
     return DEVSL_SUCCESS;
 }
 
 void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSecurityInfo *info)
 {
-    DATA_SEC_LOG_INFO("Enter OnApiDeviceSecInfoCallback...");
+    DATA_SEC_LOG_DEBUG("Enter OnApiDeviceSecInfoCallback...");
     if (identify == NULL) {
-        DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback: DeviceIdentify is null");
+        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: DeviceIdentify is null");
         return;
     }
     int32_t ret = DEVSL_SUCCESS;
 
     if (info == NULL) {
-        DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback: DeviceSecurityInfo is null");
+        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: DeviceSecurityInfo is null");
         ret = DEVSL_ERROR;
     }
     if (g_deviceSecEnv.getDeviceSecurityLevelValue == NULL) {
@@ -229,12 +229,12 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
     if (g_callbackList != NULL) {
         LookupCallback(g_callbackList, &queryParams, ret, levelInfo);
     }
-    DATA_SEC_LOG_INFO("OnApiDeviceSecInfoCallback done!");
+    DATA_SEC_LOG_DEBUG("OnApiDeviceSecInfoCallback done!");
 }
 
 int32_t GetDeviceSecLevelByUdidAsync(const uint8_t *udid, uint32_t udidLen)
 {
-    DATA_SEC_LOG_INFO("Enter GetDeviceSecLevelByUdidAsync...");
+    DATA_SEC_LOG_DEBUG("Enter GetDeviceSecLevelByUdidAsync...");
     if (g_deviceSecEnv.requestDeviceSecurityInfoAsync == NULL) {
         DATA_SEC_LOG_ERROR("GetDeviceSecLevelByUdidAsync: requestDeviceSecurityInfoAsync is invalid");
         return DEVSL_ERROR;
@@ -256,13 +256,13 @@ int32_t GetDeviceSecLevelByUdidAsync(const uint8_t *udid, uint32_t udidLen)
         return ret;
     }
 
-    DATA_SEC_LOG_INFO("GetDeviceSecLevelByUdidAsync done!");
+    DATA_SEC_LOG_DEBUG("GetDeviceSecLevelByUdidAsync done!");
     return ret;
 }
 
 int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParamsR)
 {
-    DATA_SEC_LOG_INFO("Enter CompareUdid...");
+    DATA_SEC_LOG_DEBUG("Enter CompareUdid...");
     uint32_t i;
 
     if (queryParamsL->udidLen != queryParamsR->udidLen) {
@@ -273,7 +273,7 @@ int32_t CompareUdid(DEVSLQueryParams *queryParamsL, DEVSLQueryParams *queryParam
             return DEVSL_ERROR;
         }
     }
-    DATA_SEC_LOG_INFO("CompareUdid done!");
+    DATA_SEC_LOG_DEBUG("CompareUdid done!");
     return DEVSL_SUCCESS;
 }
 
@@ -306,7 +306,7 @@ uint32_t GetDataSecLevelByDevSecLevel(int32_t devLevel)
 
 int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback)
 {
-    DATA_SEC_LOG_INFO("Enter UpdateCallbackListParams...");
+    DATA_SEC_LOG_DEBUG("Enter UpdateCallbackListParams...");
     int32_t ret;
     int32_t result = DEVSL_ERR_REQUEST_DEVICE_EXCEED_LIMIT;
     uint32_t levelInfo = DEFAULT_DEV_SEC_LEVEL;
@@ -333,6 +333,6 @@ int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCal
     }
 
     ret = PushListNode(g_callbackList, newListNode);
-    DATA_SEC_LOG_INFO("UpdateCallbackListParams done!");
+    DATA_SEC_LOG_DEBUG("UpdateCallbackListParams done!");
     return ret;
 }
