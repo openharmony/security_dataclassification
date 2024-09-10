@@ -71,9 +71,7 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
             if (pList->callbackParams != NULL) {
                 free(pList->callbackParams);
             }
-            if (pList != NULL) {
-                free(pList);
-            }
+            free(pList);
             break;
         }
         pList = pList->next;
@@ -95,9 +93,7 @@ void ClearList(struct DATASLListParams *list)
         if (delList->callbackParams != NULL) {
             free(delList->callbackParams);
         }
-        if (delList != NULL) {
-            free(delList);
-        }
+        free(delList);
     }
     if (list->callbackParams != NULL) {
         free(list->callbackParams);
@@ -138,9 +134,7 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
             if (tmpCallback->callbackParams != NULL) {
                 free(tmpCallback->callbackParams);
             }
-            if (tmpCallback != NULL) {
-                free(tmpCallback);
-            }
+            free(tmpCallback);
             break;
         }
         tmpCallback = nextCallback;
