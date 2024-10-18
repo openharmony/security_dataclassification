@@ -27,12 +27,12 @@ ohos_fuzztest("GetHighestSecLevelAsyncFuzzTest") {
 
   include_dirs = [
     "./",
-    "../../../../interfaces/innerkits/datatransmitmgr/include",
+    "../../../../interfaces/inner_api/datatransmitmgr/include",
   ]
 
   sources = [ "gethighestseclevelasync_fuzzer.cpp" ]
 
-  deps = [ "../../../../interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
+  deps = [ "../../../../interfaces/inner_api/datatransmitmgr:data_transit_mgr" ]
 
   defines = [ "HILOG_ENABLE" ]
 
