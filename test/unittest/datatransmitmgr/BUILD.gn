@@ -18,8 +18,7 @@ config("datatransmitmgr_test_config") {
   visibility = [ ":*" ]
   include_dirs = [
     "//base/security/dataclassification/test/unittest/datatransmitmgr",
-    "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr/include",
-    "//base/startup/init/interfaces/innerkits/include/syspara",
+    "../../../interfaces/inner_api/datatransmitmgr/include",
     "//third_party/googletest/googletest/include",
     "//commonlibrary/c_utils/base/include",
   ]
@@ -45,7 +44,7 @@ ohos_unittest("DevSLMgrTest") {
     }
   }
 
-  deps = [ "../../../interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
+  deps = [ "../../../interfaces/inner_api/datatransmitmgr:data_transit_mgr" ]
 
   defines = [ "HILOG_ENABLE" ]
 
