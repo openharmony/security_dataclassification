@@ -14,6 +14,6 @@
 import("//build/ohos.gni")
 group("dataclassification_build_module") {
   if (os_level == "standard") {
-    deps = [ "interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
+    deps = [ "interfaces/inner_api/datatransmitmgr:data_transit_mgr" ]
   }
 }

@@ -41,12 +41,12 @@
             ],
             "inner_kits": [
                 {
-                    "name": "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr:data_transit_mgr",
+                    "name": "//base/security/dataclassification/interfaces/inner_api/datatransmitmgr:data_transit_mgr",
                     "header": {
                         "header_files": [
                             "dev_slinfo_mgr.h"
                         ],
-                        "header_base": "//base/security/dataclassification/interfaces/innerkits/datatransmitmgr/include"
+                        "header_base": "//base/security/dataclassification/interfaces/inner_api/datatransmitmgr/include"
                     }
                 }
             ],

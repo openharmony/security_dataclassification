@@ -27,12 +27,12 @@ ohos_fuzztest("DataTransmitMgrFuzzTest") {
 
   include_dirs = [
     "./",
-    "../../../../interfaces/innerkits/datatransmitmgr/include",
+    "../../../../interfaces/inner_api/datatransmitmgr/include",
   ]
 
   sources = [ "datatransmitmgr_fuzzer.cpp" ]
 
-  deps = [ "../../../../interfaces/innerkits/datatransmitmgr:data_transit_mgr" ]
+  deps = [ "../../../../interfaces/inner_api/datatransmitmgr:data_transit_mgr" ]
 
   external_deps = [
     "c_utils:utils",
