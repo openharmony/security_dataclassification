@@ -28,6 +28,7 @@ ohos_unittest("DevSLMgrTest") {
   sources = [ "DevSLMgrTest.cpp" ]
 
   if (os_level == "standard") {
+    branch_protector_ret = "pac_ret"
     sanitize = {
       cfi = true
       cfi_cross_dso = true
@@ -35,7 +36,6 @@ ohos_unittest("DevSLMgrTest") {
       integer_overflow = true
       ubsan = true
       boundary_sanitize = true
-      stack_protector_ret = true
     }
   }
 
