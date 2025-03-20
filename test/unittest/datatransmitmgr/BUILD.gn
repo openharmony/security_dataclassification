@@ -12,7 +12,7 @@
 # limitations under the License.
 
 import("//build/test.gni")
-module_output_path = "dataclassification/datasecuritylevel"
+module_output_path = "dataclassification/dataclassification"
 
 config("datatransmitmgr_test_config") {
   visibility = [ ":*" ]
