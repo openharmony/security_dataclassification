@@ -132,7 +132,7 @@ static int32_t GetLocalUdid(DEVSLQueryParams *queryParams)
     return ret;
 }
 
-static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level0)
 {
     int32_t ret;
 
@@ -141,7 +141,7 @@ static HWTEST_F(DevSLMgrTest, TestOnstart, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level0)
 {
     int32_t ret;
     uint32_t levelInfo = 0;
@@ -153,7 +153,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel001, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level0)
 {
     int32_t ret;
 
@@ -168,7 +168,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel002, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level0)
 {
     int32_t ret;
     uint32_t levelInfo = 0;
@@ -185,7 +185,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel003, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel004, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevel004, TestSize.Level0)
 {
     int32_t ret;
     uint32_t levelInfo = 0;
@@ -207,7 +207,7 @@ static void tmpCallback000(DEVSLQueryParams *queryParams, int32_t result, uint32
     EXPECT_EQ(DEVSL_ERR_BAD_PARAMETERS, result);
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level0)
 {
     int32_t ret;
 
@@ -218,7 +218,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync001, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync002, TestSize.Level0)
 {
     int32_t ret;
     DEVSLQueryParams queryParams;
@@ -238,7 +238,7 @@ static void tmpCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t 
     EXPECT_EQ(DATA_SEC_LEVEL0, static_cast<int32_t>(levelInfo));
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync003, TestSize.Level0)
 {
     int32_t ret;
     DEVSLQueryParams queryParams;
@@ -262,7 +262,7 @@ static void tmpCallbackLocal(DEVSLQueryParams *queryParams, int32_t result, uint
     EXPECT_EQ(DEVSL_SUCCESS, result);
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync004, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync004, TestSize.Level0)
 {
     int32_t ret;
     DEVSLQueryParams queryParams;
@@ -282,7 +282,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelAsync004, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept001, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept001, TestSize.Level0)
 {
     OnApiDeviceSecInfoCallback(nullptr, nullptr);
     GetDeviceSecLevelByUdidAsync(nullptr, 0);
@@ -314,7 +314,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept001, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept002, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept002, TestSize.Level0)
 {
     int32_t ret;
     int32_t devLevel = 0;
@@ -367,7 +367,7 @@ static void ListCallback(DEVSLQueryParams *queryParams, int32_t result, uint32_t
     EXPECT_EQ(result, DEVSL_SUCCESS);
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level0)
 {
     int32_t ret = InitPthreadMutex();
     EXPECT_EQ(DEVSL_SUCCESS, ret);
@@ -423,7 +423,7 @@ static void AddList(void)
     PushListNode(g_tmpList, newListNode);
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept004, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept004, TestSize.Level0)
 {
     int32_t ret;
     ret = DATASL_OnStart();
@@ -451,7 +451,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept004, TestSize.Level1)
     DATASL_OnStop();
 }
 
-static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level1)
+static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level0)
 {
     int32_t ret;
     ret = DATASL_OnStart();
