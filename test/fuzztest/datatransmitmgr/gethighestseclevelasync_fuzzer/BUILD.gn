@@ -40,9 +40,11 @@ ohos_fuzztest("GetHighestSecLevelAsyncFuzzTest") {
     "access_token:libaccesstoken_sdk",
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
+    "cJSON:cjson_static",
     "c_utils:utils",
     "device_security_level:dslm_sdk",
     "hilog:libhilog",
     "init:libbegetutil",
+    "selinux_adapter:librestorecon",
   ]
 }
