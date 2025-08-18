@@ -32,7 +32,8 @@
                 "hilog",
                 "init",
                 "c_utils",
-                "cJSON"
+                "cJSON",
+                "selinux_adapter"
             ],
             "third_party": []
         },
