@@ -31,7 +31,8 @@
                 "device_security_level",
                 "hilog",
                 "init",
-                "c_utils"
+                "c_utils",
+                "cJSON"
             ],
             "third_party": []
         },
