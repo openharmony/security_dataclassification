@@ -64,7 +64,9 @@ ohos_shared_library("data_transit_mgr") {
   defines = [ "HILOG_ENABLE" ]
 
   cflags = [
+    "-D_FORTIFY_SOURCE=2",
     "-DHILOG_ENABLE",
     "-Wall",
+    "-fstack-protector-strong",
   ]
 }
