@@ -15,7 +15,7 @@ import("//build/ohos.gni")
 import("//build/test.gni")
 
 ohos_fuzztest("DataTransmitMgrFuzzTest") {
-  module_out_path = "security/dataclassification/dataclassification"
+  module_out_path = "security/dataclassification/dataclassification/dataclassification"
   fuzz_config_file = "."
 
   cflags = [
