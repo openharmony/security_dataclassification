@@ -49,12 +49,12 @@
 
 **表 2**  数据传输管控提供的API接口功能介绍
 
-| 接口名                                                       | 描述                                   |
-| ------------------------------------------------------------ | -------------------------------------- |
-| int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo); | 获取对应设备可支持的数据风险等级。     |
-| int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback); | 异步获取对应设备可支持的数据风险等级。 |
-| int32_t DATASL_OnStart(void);                                | 模块初始化。                           |
-| void DATASL_OnStop(void);                                    | 模块去初始化。                         |
+| 接口名                                                       | 描述                                   | 是否支持多线程中调用 |
+| ------------------------------------------------------------ | -------------------------------------- | ------------ |
+| int32_t DATASL_GetHighestSecLevel(DEVSLQueryParams *queryParams, uint32_t *levelInfo); | 获取对应设备可支持的数据风险等级。   | 是 |
+| int32_t DATASL_GetHighestSecLevelAsync(DEVSLQueryParams *queryParams, HigestSecInfoCallback *callback); | 异步获取对应设备可支持的数据风险等级。  | 是 |
+| int32_t DATASL_OnStart(void);                                | 模块初始化。           | 否 |
+| void DATASL_OnStop(void);                                    | 模块去初始化。          | 否 |
 
 
 
