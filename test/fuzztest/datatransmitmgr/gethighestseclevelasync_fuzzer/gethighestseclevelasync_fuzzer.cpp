@@ -62,7 +62,6 @@ static void BeginFuzzCase1(void)
         g_isForcingFuzz1 = true;
         OHOS::SaveStringToFile("/sys/fs/selinux/enforce", "0");
     }
-    NativeTokenGetFuzz1();
 }
 
 static void EndFuzzCase1(void)
@@ -106,6 +105,13 @@ void FuzzDoGetHighestSecLevelAsync(const uint8_t *data, size_t size)
     DATASL_OnStop();
     EndFuzzCase1();
 }
+}
+
+/* Fuzzer entry point */
+extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
+{
+    NativeTokenGetFuzz1();
+    return 0;
 }
 
 /* Fuzzer entry point */
