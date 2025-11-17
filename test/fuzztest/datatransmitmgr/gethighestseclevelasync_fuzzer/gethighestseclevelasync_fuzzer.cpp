@@ -110,7 +110,7 @@ void FuzzDoGetHighestSecLevelAsync(const uint8_t *data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
-    NativeTokenGetFuzz1();
+    OHOS::NativeTokenGetFuzz1();
     return 0;
 }
 
