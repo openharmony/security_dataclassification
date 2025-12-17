@@ -141,6 +141,8 @@ void FuzzDoDevSlinfoAdpt(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
+    (void)argc;
+    (void)argv;
     OHOS::NativeTokenGetFuzz3();
     return 0;
 }
