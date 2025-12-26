@@ -39,11 +39,18 @@ namespace OHOS {
         queryParams.udidLen = size;
         (void)memcpy_s(queryParams.udid, MAX_UDID_LENGTH, data, MAX_UDID_LENGTH);
 
-        (void)DATASL_OnStart();
         (void)DATASL_GetHighestSecLevelAsync(&queryParams, tmpCallback);
         (void)DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
-        DATASL_OnStop();
     }
+}
+
+/* Fuzzer entry point */
+extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
+{
+    (void)argc;
+    (void)argv;
+    (void)DATASL_OnStart();
+    return 0;
 }
 
 /* Fuzzer entry point */

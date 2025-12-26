@@ -95,14 +95,12 @@ void FuzzDoGetHighestSecLevelAsync(const uint8_t *data, size_t size)
     queryParams.udidLen = MAX_UDID_LENGTH;
     (void)memcpy_s(queryParams.udid, MAX_UDID_LENGTH, data, MAX_UDID_LENGTH);
     BeginFuzzCase1();
-    (void)DATASL_OnStart();
     (void)DATASL_GetHighestSecLevelAsync(&queryParams, tmpCallbackFuzz1);
     (void)DATASL_GetHighestSecLevelAsync(nullptr, tmpCallbackFuzz1);
     (void)DATASL_GetHighestSecLevelAsync(&queryParams, nullptr);
 
     std::unique_lock<std::mutex> lck(g_mtx);
     g_cv.wait_for(lck, std::chrono::milliseconds(DELAY_TIME), []() { return (g_cnt == 1); });
-    DATASL_OnStop();
     EndFuzzCase1();
 }
 }
@@ -113,6 +111,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     (void)argc;
     (void)argv;
     OHOS::NativeTokenGetFuzz1();
+    (void)DATASL_OnStart();
     return 0;
 }
 

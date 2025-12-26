@@ -112,7 +112,6 @@ void FuzzDoDevSlinfoAdpt(const uint8_t* data, size_t size)
     int32_t devLevel = 0;
     DeviceIdentify devId;
     DeviceSecurityInfo devInfo;
-    (void)DATASL_OnStart();
 
     do {
         int32_t ret = GetLocalUdidFuzz3(&queryParams);
@@ -125,7 +124,6 @@ void FuzzDoDevSlinfoAdpt(const uint8_t* data, size_t size)
         }
         (void)GetDeviceSecLevelByUdid(static_cast<const uint8_t *>(queryParams.udid), queryParams.udidLen, &devLevel);
         (void)DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
-
         (void)memset_s(&devId, sizeof(devId), 0, sizeof(devId));
         (void)memcpy_s(devId.identity, MAX_UDID_LENGTH, queryParams.udid, queryParams.udidLen);
         devId.length = queryParams.udidLen;
@@ -133,7 +131,6 @@ void FuzzDoDevSlinfoAdpt(const uint8_t* data, size_t size)
         OnApiDeviceSecInfoCallback(&devId, nullptr);
         OnApiDeviceSecInfoCallback(&devId, &devInfo);
     } while (0);
-    DATASL_OnStop();
     EndFuzzCase3();
 }
 }
@@ -144,6 +141,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     (void)argc;
     (void)argv;
     OHOS::NativeTokenGetFuzz3();
+    (void)DATASL_OnStart();
     return 0;
 }
 
