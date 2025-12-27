@@ -94,7 +94,6 @@ void FuzzDoGetHighestSecLevel(const uint8_t *data, size_t size)
     queryParams.udidLen = MAX_UDID_LENGTH;
     (void)memcpy_s(queryParams.udid, MAX_UDID_LENGTH, data, MAX_UDID_LENGTH);
     BeginFuzzCase2();
-    (void)DATASL_OnStart();
     (void)DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
     (void)DATASL_GetHighestSecLevel(nullptr, &levelInfo);
     (void)DATASL_GetHighestSecLevel(&queryParams, nullptr);
@@ -102,7 +101,6 @@ void FuzzDoGetHighestSecLevel(const uint8_t *data, size_t size)
     (void)GetLocalUdidFuzz2(&queryParams);
 
     (void)DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
-    DATASL_OnStop();
     EndFuzzCase2();
 }
 }
@@ -113,6 +111,7 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
     (void)argc;
     (void)argv;
     OHOS::NativeTokenGetFuzz2();
+    (void)DATASL_OnStart();
     return 0;
 }
 
