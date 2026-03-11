@@ -17,6 +17,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <fuzzer/FuzzedDataProvider.h>
 
 #include "securec.h"
 #include "dev_slinfo_mgr.h"
@@ -36,8 +37,9 @@ namespace OHOS {
         uint32_t levelInfo = 0;
         DEVSLQueryParams queryParams;
         (void)memset_s(&queryParams, sizeof(DEVSLQueryParams), 0, sizeof(DEVSLQueryParams));
-        queryParams.udidLen = size;
         (void)memcpy_s(queryParams.udid, MAX_UDID_LENGTH, data, MAX_UDID_LENGTH);
+        FuzzedDataProvider fdp(data, size);
+        queryParams.udidLen = fdp.ConsumeIntegral<uint32_t>();
 
         (void)DATASL_GetHighestSecLevelAsync(&queryParams, tmpCallback);
         (void)DATASL_GetHighestSecLevel(&queryParams, &levelInfo);
@@ -49,6 +51,8 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 {
     (void)argc;
     (void)argv;
+    (void)DATASL_OnStart();
+    (void)DATASL_OnStop();
     (void)DATASL_OnStart();
     return 0;
 }
