@@ -29,8 +29,8 @@
                 "device_security_level",
                 "hilog",
                 "init",
-                "c_utils",	 
-                "cJSON", 
+                "c_utils",
+                "cJSON",
                 "selinux_adapter"
             ],
             "third_party": []
