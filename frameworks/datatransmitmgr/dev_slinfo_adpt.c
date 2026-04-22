@@ -184,8 +184,8 @@ int32_t GetDeviceSecLevelByUdid(const uint8_t *udid, uint32_t udidLen, int32_t *
 void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSecurityInfo *info)
 {
     DATA_SEC_LOG_DEBUG("Enter OnApiDeviceSecInfoCallback...");
-    if (identify == NULL) {
-        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: DeviceIdentify is null");
+    if (identify == NULL || identify->length > MAX_UDID_LENGTH) {
+        DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: DeviceIdentify is null or DeviceIdentify len is error");
         return;
     }
     int32_t ret = DEVSL_SUCCESS;
@@ -333,6 +333,10 @@ int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCal
     }
 
     ret = PushListNode(g_callbackList, newListNode);
+    if (ret != DEVSL_SUCCESS) {
+        DATA_SEC_LOG_ERROR("PushListNode error: ret is %{public}d", ret);
+        free(newListNode);
+    }
     DATA_SEC_LOG_DEBUG("UpdateCallbackListParams done!");
     return ret;
 }
