@@ -41,6 +41,7 @@ ohos_fuzztest("GetHighestSecLevelAsyncFuzzTest") {
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
     "cJSON:cjson_static",
+    "bounds_checking_function:libsec_shared",
     "c_utils:utils",
     "device_security_level:dslm_sdk",
     "hilog:libhilog",

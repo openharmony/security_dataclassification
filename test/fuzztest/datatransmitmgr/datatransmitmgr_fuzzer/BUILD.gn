@@ -35,6 +35,7 @@ ohos_fuzztest("DataTransmitMgrFuzzTest") {
   deps = [ "../../../../interfaces/inner_api/datatransmitmgr:data_transit_mgr" ]
 
   external_deps = [
+    "bounds_checking_function:libsec_shared",
     "c_utils:utils",
     "hilog:libhilog",
   ]
