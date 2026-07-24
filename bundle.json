@@ -31,7 +31,8 @@
                 "init",
                 "c_utils",
                 "cJSON",
-                "selinux_adapter"
+                "selinux_adapter",
+                "bounds_checking_function"
             ],
             "third_party": []
         },

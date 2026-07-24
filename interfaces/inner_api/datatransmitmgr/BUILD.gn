@@ -57,6 +57,7 @@ ohos_shared_library("data_transit_mgr") {
     external_deps = [ "c_utils:utils" ]
   }
   external_deps += [
+    "bounds_checking_function:libsec_shared",
     "device_security_level:dslm_sdk",
     "hilog:libhilog",
   ]
