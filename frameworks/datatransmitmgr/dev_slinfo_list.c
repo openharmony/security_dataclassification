@@ -60,8 +60,12 @@ int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams 
     return DEVSL_SUCCESS;
 }
 
-void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams *callbackParams)
+void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams *callbackParams,
+    int32_t result, uint32_t levelInfo)
 {
+    struct DATASLCallbackParams tmpCallbackParams;
+    (void)memset_s(&tmpCallbackParams, sizeof(struct DATASLCallbackParams), 0, sizeof(struct DATASLCallbackParams));
+    tmpCallbackParams.callback = NULL;
     (void)pthread_mutex_lock(&g_mutex);
     struct DATASLListParams *pList = list->next;
     while (pList != NULL && pList != list) {
@@ -69,6 +73,9 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
             pList->prev->next = pList->next;
             pList->next->prev = pList->prev;
             if (pList->callbackParams != NULL) {
+                (void)memcpy_s(&(tmpCallbackParams.queryParams), sizeof(DEVSLQueryParams),
+                    &(pList->callbackParams->queryParams), sizeof(DEVSLQueryParams));
+                tmpCallbackParams.callback = pList->callbackParams->callback;
                 free(pList->callbackParams);
             }
             free(pList);
@@ -77,6 +84,9 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
         pList = pList->next;
     }
     (void)pthread_mutex_unlock(&g_mutex);
+    if (tmpCallbackParams.callback != NULL) {
+        tmpCallbackParams.callback(&(tmpCallbackParams.queryParams), result, levelInfo);
+    }
 }
 
 void ClearList(struct DATASLListParams *list)

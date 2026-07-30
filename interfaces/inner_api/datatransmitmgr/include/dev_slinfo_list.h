@@ -34,7 +34,8 @@ struct DATASLListParams* InitList(void);
 
 int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
 
-void RemoveListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams);
+void RemoveListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams,
+    int32_t result, uint32_t levelInfo);
 
 void ClearList(struct DATASLListParams *list);
 
