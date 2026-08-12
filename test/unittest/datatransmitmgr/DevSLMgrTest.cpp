@@ -480,9 +480,9 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level0)
 
 static HWTEST_F(DevSLMgrTest, TestListNull, TestSize.Level1)
 {
-    EXPECT_EQ(DEVSL_ERROR, PushListNode(NULL, NULL));
-    RemoveListNode(NULL, NULL, 0, 0);
-    ClearList(NULL);
-    EXPECT_EQ(DEVSL_ERROR, GetListLength(NULL));
-    LookupCallback(NULL, NULL, 0, 0);
+    EXPECT_EQ(DEVSL_ERROR, PushListNode(nullptr, nullptr));
+    RemoveListNode(nullptr, nullptr, 0, 0);
+    ClearList(nullptr);
+    EXPECT_EQ(DEVSL_ERROR, GetListLength(nullptr));
+    LookupCallback(nullptr, nullptr, 0, 0);
 }
