@@ -229,6 +229,7 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
     if (g_callbackList != NULL) {
         LookupCallback(g_callbackList, &queryParams, ret, levelInfo);
     }
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
     DATA_SEC_LOG_DEBUG("OnApiDeviceSecInfoCallback done!");
 }
 
