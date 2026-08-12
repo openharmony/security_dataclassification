@@ -26,6 +26,7 @@ struct DATASLListParams* InitList(void)
     (void)pthread_mutex_lock(&g_mutex);
     struct DATASLListParams *list = (struct DATASLListParams *)malloc(sizeof(struct DATASLListParams));
     if (list == NULL) {
+        DATA_SEC_LOG_ERROR("InitList: list is NULL");
         (void)pthread_mutex_unlock(&g_mutex);
         return NULL;
     }
@@ -48,6 +49,11 @@ static void UpdateListNode(struct DATASLListParams *newListNode,
 int32_t PushListNode(struct DATASLListParams *list, struct DATASLCallbackParams *callbackParams)
 {
     (void)pthread_mutex_lock(&g_mutex);
+    if (list == NULL) {
+        DATA_SEC_LOG_ERROR("PushListNode: list is NULL");
+        (void)pthread_mutex_unlock(&g_mutex);
+        return DEVSL_ERROR;
+    }
     struct DATASLListParams *newList = (struct DATASLListParams*)malloc(sizeof(struct DATASLListParams));
     if (newList == NULL) {
         (void)pthread_mutex_unlock(&g_mutex);
@@ -67,6 +73,11 @@ void RemoveListNode(struct DATASLListParams *list,  struct DATASLCallbackParams 
     (void)memset_s(&tmpCallbackParams, sizeof(struct DATASLCallbackParams), 0, sizeof(struct DATASLCallbackParams));
     tmpCallbackParams.callback = NULL;
     (void)pthread_mutex_lock(&g_mutex);
+    if (list == NULL) {
+        DATA_SEC_LOG_ERROR("RemoveListNode: list is NULL");
+        (void)pthread_mutex_unlock(&g_mutex);
+        return;
+    }
     struct DATASLListParams *pList = list->next;
     while (pList != NULL && pList != list) {
         if (CompareUdid(&(pList->callbackParams->queryParams), &(callbackParams->queryParams)) == DEVSL_SUCCESS) {
@@ -93,6 +104,7 @@ void ClearList(struct DATASLListParams *list)
 {
     (void)pthread_mutex_lock(&g_mutex);
     if (list == NULL) {
+        DATA_SEC_LOG_ERROR("ClearList: list is NULL");
         (void)pthread_mutex_unlock(&g_mutex);
         return;
     }
@@ -115,6 +127,11 @@ void ClearList(struct DATASLListParams *list)
 int32_t GetListLength(struct DATASLListParams *list)
 {
     (void)pthread_mutex_lock(&g_mutex);
+    if (list == NULL) {
+        DATA_SEC_LOG_ERROR("GetListLength: list is NULL");
+        (void)pthread_mutex_unlock(&g_mutex);
+        return DEVSL_ERROR;
+    }
     struct DATASLListParams *pList = list->next;
     int32_t listLength = 0;
     while (pList != NULL && pList != list) {
@@ -131,6 +148,11 @@ void LookupCallback(struct DATASLListParams *list, DEVSLQueryParams *queryParams
     (void)memset_s(&tmpCallbackParams, sizeof(struct DATASLCallbackParams), 0, sizeof(struct DATASLCallbackParams));
     int32_t ret = DEVSL_ERROR;
     (void)pthread_mutex_lock(&g_mutex);
+    if (list == NULL) {
+        DATA_SEC_LOG_ERROR("LookupCallback: list is NULL");
+        (void)pthread_mutex_unlock(&g_mutex);
+        return;
+    }
     struct DATASLListParams *tmpCallback = list->next;
     while (tmpCallback != NULL && tmpCallback != list) {
         struct DATASLListParams *nextCallback = tmpCallback->next;
