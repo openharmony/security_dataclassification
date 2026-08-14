@@ -224,6 +224,7 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
         DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: udid memcpy failed");
         return;
     }
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
     queryParams.udidLen = identify->length;
 
     if (g_callbackList != NULL) {
