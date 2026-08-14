@@ -396,7 +396,7 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept003, TestSize.Level0)
     newListNode->callback = &ListCallback;
 
     PushListNode(g_tmpList, newListNode);
-    RemoveListNode(g_tmpList, newListNode);
+    RemoveListNode(g_tmpList, newListNode, 0, 0);
     ClearList(g_tmpList);
     g_tmpList = nullptr;
     DestroyPthreadMutex();
@@ -469,9 +469,9 @@ static HWTEST_F(DevSLMgrTest, TestGetHighestSecLevelExcept005, TestSize.Level0)
     (void)memcpy_s(newListNode->queryParams.udid, MAX_UDID_LENGTH, queryParams.udid, queryParams.udidLen);
     newListNode->queryParams.udidLen = queryParams.udidLen;
     newListNode->callback = nullptr;
-    RemoveListNode(g_tmpList, newListNode);
+    RemoveListNode(g_tmpList, newListNode, 0, 0);
     PushListNode(g_tmpList, newListNode);
-    RemoveListNode(g_tmpList, newListNode);
+    RemoveListNode(g_tmpList, newListNode, 0, 0);
 
     ClearList(g_tmpList);
     g_tmpList = nullptr;

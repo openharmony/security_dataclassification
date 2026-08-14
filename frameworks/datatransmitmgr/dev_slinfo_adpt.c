@@ -224,6 +224,7 @@ void OnApiDeviceSecInfoCallback(const DeviceIdentify *identify, struct DeviceSec
         DATA_SEC_LOG_ERROR("OnApiDeviceSecInfoCallback: udid memcpy failed");
         return;
     }
+    (void)memset_s(&queryParams, sizeof(queryParams), 0, sizeof(queryParams));
     queryParams.udidLen = identify->length;
 
     if (g_callbackList != NULL) {
@@ -328,8 +329,7 @@ int32_t UpdateCallbackListParams(DEVSLQueryParams *queryParams, HigestSecInfoCal
 
     ret = GetListLength(g_callbackList);
     if (ret == MAX_LIST_LENGTH) {
-        g_callbackList->next->callbackParams->callback(queryParams, result, levelInfo);
-        RemoveListNode(g_callbackList, g_callbackList->next->callbackParams);
+        RemoveListNode(g_callbackList, g_callbackList->next->callbackParams, result, levelInfo);
     }
 
     ret = PushListNode(g_callbackList, newListNode);
